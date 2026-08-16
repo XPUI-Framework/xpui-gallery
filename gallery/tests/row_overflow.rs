@@ -31,12 +31,26 @@ fn probe(board: Board) {
         _ => None,
     });
 
-    let below =
-        backend.with_display(|f| f.ink_in(0, top + band, board.width, board.height - top - band));
+    // The rect is too generous to be the assertion. `draw_list` stops before a
+    // row that does not fit, so on a 480x800 panel it leaves 224 pixels of
+    // slack inside its own rect — a row could overflow its bounds by that much
+    // and still land nowhere near the edge. The floor is the bottom of the last
+    // row it actually painted.
+    let cells = |index: usize, field: RowField| match field {
+        RowField::Title => Some(["Controls", "Lists", "Dialogs", "Scrolling"][index % 4]),
+        RowField::Subtitle => Some("Slider, stepper, toggle, progress"),
+        _ => None,
+    };
+    let painted = xpui_chrome::rows_that_fit(&board.tokens, rect, 8, &cells);
+    let stride = xpui_chrome::row_height(&board.tokens, 8, &cells) + board.tokens.list_row_gap;
+    let floor = top + (painted as i32) * stride;
+
+    let below = backend.with_display(|f| f.ink_in(0, floor, board.width, board.height - floor));
     assert_eq!(
         below, 0,
-        "{}: {} pixels of ink below the list's own rect — a row overflowed the \
-         height `row_height` promised, so `draw_list`'s fit check let it through",
+        "{}: {} pixels of ink below the last row that fits — {painted} rows of \
+         {stride}px from y={top}, so anything past y={floor} is a row that \
+         overflowed the height `row_height` promised",
         board.name, below
     );
 }
