@@ -1,5 +1,6 @@
 clear
 header      title="Controls" subtitle=-
+clip        (0,60 480x700)
 text        (16,60) "Brightness" font=1003 regular
 text        (446,60) "60%" font=1003 bold
 text        (33,102) "-" font=1003 regular
@@ -13,4 +14,6 @@ list        (16,245 448x40) rows=1 selected=-1
   row 0  title="Frontlight" subtitle=- value="On"
 text        (16,299) "Downloading" font=1004 regular
 progress    (16,327 448x6) 42/100
+clip        none
+scrollbar   (0,60 480x700) content=273 visible=700 offset=0
 hints       back=- confirm=- previous="-" next="+"

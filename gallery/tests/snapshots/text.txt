@@ -1,9 +1,12 @@
 clear
 header      title="Text" subtitle=-
+clip        (0,60 480x700)
 text        (16,60) "Reader" font=1001 regular
 text        (16,89) "Interface" font=1003 regular
 text        (16,116) "Interface bold" font=1003 bold
 text        (16,143) "Small" font=1004 regular
 line        (16,167) -> (463,167)
 text        (16,178) "A line long enough that it cannot possibly fit across the panel" font=1003 regular
+clip        none
+scrollbar   (0,60 480x700) content=135 visible=700 offset=0
 hints       back=- confirm=- previous=- next=-

@@ -5,9 +5,9 @@
 //! cargo run -p xpui-gallery -- --frames 60     # stop after 60 frames
 //! ```
 //!
-//! Arrows move focus, Enter opens, Escape goes back, H is the home gesture,
-//! Q quits. Clicking is a tap and the scroll wheel is a swipe, so the touch
-//! paths work too.
+//! Arrows move focus, Enter opens, Backspace goes back, H is the home gesture,
+//! Q or Escape quits. Clicking is a tap and the scroll wheel is a swipe, so the
+//! touch paths work too.
 //!
 //! `--frames` exists so the loop can be *tested*. Without it the only way out
 //! is a person closing the window, which means CI — and any check that the

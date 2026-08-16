@@ -75,7 +75,7 @@ impl Screen for Controls {
     type Message = ControlsMsg;
 
     fn body(&self) -> impl View<Self::Message> {
-        NavigationScreen::new(vstack![14;
+        NavigationScreen::new(ScrollView::new(vstack![14;
             // A stepper is one focus stop but three touch targets: the two
             // glyphs nudge, the track sets an absolute value.
             label("Brightness", &self.labels.brightness),
@@ -93,7 +93,7 @@ impl Screen for Controls {
 
             Text::new("Downloading").font(Font::ui_small()),
             ProgressBar::percent(self.downloaded),
-        ])
+        ]))
         .title("Controls")
         .hints(
             Hint::Standard,
@@ -154,7 +154,7 @@ impl Screen for Lists {
     type Message = usize;
 
     fn body(&self) -> impl View<Self::Message> {
-        NavigationScreen::new(vstack![12;
+        NavigationScreen::new(ScrollView::new(vstack![12;
             Section::new("One line", List::new()
                 .push(ListRow::new("Wi-Fi").value("Off").on_tap(0))
                 .push(ListRow::new("Bluetooth").value("On").on_tap(1))),
@@ -164,7 +164,7 @@ impl Screen for Lists {
             Section::new("With subtitles", List::new()
                 .push(ListRow::new("Storage").subtitle("3.1 GB free").value("32 GB").on_tap(2))
                 .push(ListRow::new("Battery").subtitle("Charging").value("72%").on_tap(3))),
-        ])
+        ]))
         .title("Lists")
     }
 
@@ -332,7 +332,7 @@ impl Screen for TextSizes {
     type Message = ();
 
     fn body(&self) -> impl View<Self::Message> {
-        NavigationScreen::new(vstack![10;
+        NavigationScreen::new(ScrollView::new(vstack![10;
             Text::new("Reader").font(Font::reader()),
             Text::new("Interface").font(Font::ui()),
             Text::new("Interface bold").font(Font::ui().bold()),
@@ -342,7 +342,7 @@ impl Screen for TextSizes {
             // cut on a character boundary and given an ellipsis, rather than
             // running into whatever sits beside it.
             Text::new("A line long enough that it cannot possibly fit across the panel"),
-        ])
+        ]))
         .title("Text")
     }
 

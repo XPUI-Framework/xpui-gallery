@@ -1,5 +1,6 @@
 clear
 header      title="Lists" subtitle=-
+clip        (0,60 480x700)
 sub-header  (16,60 448x17) "One line" right=-
 list        (16,81 448x84) rows=2 selected=0
   row 0  title="Wi-Fi" subtitle=- value="Off"
@@ -8,4 +9,6 @@ sub-header  (16,177 448x17) "With subtitles" right=-
 list        (16,198 448x116) rows=2 selected=-1
   row 0  title="Storage" subtitle="3.1 GB free" value="32 GB"
   row 1  title="Battery" subtitle="Charging" value="72%"
+clip        none
+scrollbar   (0,60 480x700) content=254 visible=700 offset=0
 hints       back=- confirm=- previous=- next=-
