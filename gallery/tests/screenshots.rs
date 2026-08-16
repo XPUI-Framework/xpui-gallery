@@ -173,7 +173,7 @@ fn the_menu_on_every_board() {
         let mut app = App::new(Menu::new());
         app.render();
 
-        let name = format!("board_{}", board.slug());
+        let name = format!("board_{}", board.slug);
         let thumbnail = backend.with_display(|frame| {
             frame.write_bmp_in(screenshots(), &name);
             frame.thumbnail(60.min(board.width))

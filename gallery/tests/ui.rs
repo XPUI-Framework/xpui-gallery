@@ -34,7 +34,7 @@ fn on(board: Board) -> &'static Backend<Framebuffer> {
 
 #[test]
 fn the_menu_lists_every_example() {
-    let mut ui = Ui::new(gallery::Menu::new(), on(Board::READER_PORTRAIT));
+    let mut ui = Ui::new(gallery::Menu::new(), on(Board::X4));
     let text = ui.visible_text();
 
     for title in ["Controls", "Lists", "Dialogs", "Scrolling", "Text"] {
@@ -48,7 +48,7 @@ fn the_menu_lists_every_example() {
 
 #[test]
 fn tapping_a_row_opens_that_example() {
-    let mut ui = Ui::new(gallery::Menu::new(), on(Board::READER_PORTRAIT));
+    let mut ui = Ui::new(gallery::Menu::new(), on(Board::X4));
     assert_eq!(ui.depth(), 1);
 
     ui.tap_text("Lists");
@@ -63,7 +63,7 @@ fn tapping_a_row_opens_that_example() {
 
 #[test]
 fn back_returns_to_the_menu() {
-    let mut ui = Ui::new(gallery::Menu::new(), on(Board::READER_PORTRAIT));
+    let mut ui = Ui::new(gallery::Menu::new(), on(Board::X4));
     ui.tap_text("Controls");
     assert_eq!(ui.depth(), 2);
 
@@ -74,7 +74,7 @@ fn back_returns_to_the_menu() {
 
 #[test]
 fn moving_the_focus_redraws() {
-    let mut ui = Ui::new(gallery::Menu::new(), on(Board::READER_PORTRAIT));
+    let mut ui = Ui::new(gallery::Menu::new(), on(Board::X4));
 
     ui.press(Button::Down);
 
@@ -89,7 +89,7 @@ fn moving_the_focus_redraws() {
 #[test]
 #[should_panic(expected = "nothing on screen shows")]
 fn tapping_a_label_that_is_not_there_says_so() {
-    let mut ui = Ui::new(gallery::Menu::new(), on(Board::READER_PORTRAIT));
+    let mut ui = Ui::new(gallery::Menu::new(), on(Board::X4));
     ui.tap_text("Setings");
 }
 
@@ -97,7 +97,7 @@ fn tapping_a_label_that_is_not_there_says_so() {
 /// resolving to the nearest control.
 #[test]
 fn tapping_empty_space_opens_nothing() {
-    let mut ui = Ui::new(gallery::Menu::new(), on(Board::READER_PORTRAIT));
+    let mut ui = Ui::new(gallery::Menu::new(), on(Board::X4));
 
     ui.tap_at(Point::new(2, 2));
 
@@ -116,7 +116,7 @@ fn every_row_opens_the_example_it_names() {
         ("Dialogs", "Dialogs"),
         ("Scrolling", "Scrolling"),
     ] {
-        let mut ui = Ui::new(gallery::Menu::new(), on(Board::READER_PORTRAIT));
+        let mut ui = Ui::new(gallery::Menu::new(), on(Board::X4));
         ui.tap_text(row);
 
         assert_eq!(ui.depth(), 2, "tapping {row:?} opened nothing");

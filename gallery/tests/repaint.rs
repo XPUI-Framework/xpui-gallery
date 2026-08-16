@@ -21,7 +21,7 @@ fn pixels(backend: &'static Backend<Framebuffer>) -> Vec<bool> {
 
 #[test]
 fn pressing_down_changes_the_panel() {
-    let board = Board::READER_LANDSCAPE;
+    let board = Board::X4;
     let backend = Backend::leak_for_board(
         Framebuffer::new(board.width, board.height),
         board,

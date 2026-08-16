@@ -17,7 +17,7 @@ use gallery::Menu;
 use xpui_simulator::{Board, Panel, Simulator};
 
 fn main() {
-    let mut board = Board::READER_PORTRAIT;
+    let mut board = Board::X4;
     let mut frames: Option<u32> = None;
 
     // Deliberately hand-parsed. Two optional flags do not justify a
@@ -35,7 +35,7 @@ fn main() {
                     "--board must be one of: {}",
                     Board::ALL
                         .iter()
-                        .map(|b| b.slug())
+                        .map(|b| b.slug)
                         .collect::<Vec<_>>()
                         .join(", ")
                 )),

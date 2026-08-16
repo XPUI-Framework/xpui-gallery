@@ -12,7 +12,7 @@
 //! `no_std` on a device, `std` on a desktop: these exact screens are what the
 //! RP2040 binaries in [`examples/rp2040`](../../rp2040/) flash to a Badger
 //! 2040 and a Tufty 2040. One source, two targets, differing only in a
-//! [`Board`](xpui_chrome::Board) and an entry point.
+//! [`Board`](xpui_boards::Board) and an entry point.
 
 #![cfg_attr(target_os = "none", no_std)]
 
