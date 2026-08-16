@@ -1,0 +1,28 @@
+[package]
+name = "xpui-tutorial"
+description = "The screen built step by step in the tutorial, as a runnable crate"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish = false
+
+# A library as well as a binary, for the same reason the gallery is: the tests
+# drive the screen, and a test cannot open a window.
+[lib]
+name = "tutorial"
+path = "src/lib.rs"
+
+[[bin]]
+name = "tutorial"
+path = "src/main.rs"
+
+[dependencies]
+xpui.workspace = true
+xpui-simulator.workspace = true
+
+[dev-dependencies]
+xpui = { workspace = true, features = ["testing"] }
+xpui-embedded-graphics = { workspace = true, features = ["framebuffer"] }
+embedded-graphics = "0.8"
