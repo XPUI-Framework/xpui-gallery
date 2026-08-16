@@ -4,29 +4,21 @@
 //! same screens through the `embedded_graphics` backend and the `chrome`
 //! components, so what it checks is the whole stack a device would run.
 //!
+//! Each shot is compared against a committed PNG in `tests/screenshots/`,
+//! pixel for pixel.
+//!
 //! ```bash
 //! UPDATE_SNAPSHOTS=1 cargo test -p xpui-gallery
-//! open target/screenshots/
+//! open examples/gallery/tests/screenshots/
 //! ```
 
-use std::path::PathBuf;
 use std::sync::{Mutex, MutexGuard};
-
-/// One place for every screenshot, inside the workspace's target directory.
-///
-/// `CARGO_TARGET_TMPDIR` is a compile-time variable cargo sets for integration
-/// tests; the working directory at run time is the crate root, which in a
-/// workspace is the wrong place.
-fn screenshots() -> PathBuf {
-    PathBuf::from(env!("CARGO_TARGET_TMPDIR")).join("../screenshots")
-}
 
 use gallery::Menu;
 use gallery::screens::{Controls, Dialogs, Lists, Scrolling, TextSizes};
 use xpui::screen::Screen;
-use xpui::testing::assert_text_snapshot;
 use xpui::{App, Button};
-use xpui_eg::{Backend, Framebuffer, Palette};
+use xpui_eg::{Backend, Framebuffer, Palette, assert_screenshot};
 
 const WIDTH: i32 = 480;
 const HEIGHT: i32 = 800;
@@ -55,11 +47,7 @@ fn shoot<S: Screen + 'static>(name: &str, screen: S) -> &'static Backend<Framebu
 }
 
 fn capture(backend: &'static Backend<Framebuffer>, name: &str) {
-    let thumbnail = backend.with_display(|frame| {
-        frame.write_bmp_in(screenshots(), name);
-        frame.thumbnail(60)
-    });
-    assert_text_snapshot(name, &thumbnail);
+    backend.with_display(|frame| assert_screenshot(name, frame));
 }
 
 // -- the shots -------------------------------------------------------------
@@ -174,11 +162,7 @@ fn the_menu_on_every_board() {
         app.render();
 
         let name = format!("board_{}", board.slug);
-        let thumbnail = backend.with_display(|frame| {
-            frame.write_bmp_in(screenshots(), &name);
-            frame.thumbnail(60.min(board.width))
-        });
-        assert_text_snapshot(&name, &thumbnail);
+        backend.with_display(|frame| assert_screenshot(&name, frame));
 
         // The header band, and content below it.
         let chrome = board.tokens.content_top();

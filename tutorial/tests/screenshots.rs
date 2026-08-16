@@ -6,14 +6,12 @@
 //! behaviour test running after one of these would silently be asserting
 //! against the wrong host. Cargo gives each test file its own process.
 
-use std::path::PathBuf;
 use std::sync::{Mutex, MutexGuard};
 
 use tutorial::{Message, SleepTimer};
 use xpui::App;
 use xpui::screen::Screen;
-use xpui::testing::assert_text_snapshot;
-use xpui_eg::{Backend, Framebuffer, Palette};
+use xpui_eg::{Backend, Framebuffer, Palette, assert_screenshot};
 
 const WIDTH: i32 = 480;
 const HEIGHT: i32 = 800;
@@ -26,10 +24,6 @@ fn serial() -> MutexGuard<'static, ()> {
         .unwrap_or_else(|poisoned| poisoned.into_inner())
 }
 
-fn screenshots() -> PathBuf {
-    PathBuf::from(env!("CARGO_TARGET_TMPDIR")).join("../screenshots")
-}
-
 fn shoot(name: &str, screen: SleepTimer) -> &'static Backend<Framebuffer> {
     let backend = Backend::leak(Framebuffer::new(WIDTH, HEIGHT), Palette::INK_IS_ON);
     // Safety: serialised by `SERIAL`; nothing has rendered on this backend.
@@ -38,11 +32,7 @@ fn shoot(name: &str, screen: SleepTimer) -> &'static Backend<Framebuffer> {
     let mut app = App::new(screen);
     app.render();
 
-    let thumbnail = backend.with_display(|frame| {
-        frame.write_bmp_in(screenshots(), name);
-        frame.thumbnail(60)
-    });
-    assert_text_snapshot(name, &thumbnail);
+    backend.with_display(|frame| assert_screenshot(name, frame));
     backend
 }
 
