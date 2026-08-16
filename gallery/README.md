@@ -40,12 +40,14 @@ and open a window around them. That is so the tests can drive every screen
 without one:
 `tests/gallery.rs` walks the menu, opens each example, presses buttons and
 checks what came back; `tests/screenshots.rs` renders the same screens to a
-framebuffer and compares them against goldens.
+framebuffer and compares each one against a PNG committed in
+`tests/screenshots/`, pixel for pixel.
 
 ```bash
 cargo test -p xpui-gallery
 UPDATE_SNAPSHOTS=1 cargo test -p xpui-gallery   # accept intended changes
-open target/screenshots/                        # look at them
+open examples/gallery/tests/screenshots/        # then look at them
+open target/diff/                               # after a failure
 ```
 
 ## It is also the framework's dogfood

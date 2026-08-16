@@ -16,15 +16,17 @@ pub enum Example {
     Dialogs,
     Scrolling,
     Text,
+    Developers,
 }
 
 impl Example {
-    pub const ALL: [Example; 5] = [
+    pub const ALL: [Example; 6] = [
         Example::Controls,
         Example::Lists,
         Example::Dialogs,
         Example::Scrolling,
         Example::Text,
+        Example::Developers,
     ];
 
     pub fn title(self) -> &'static str {
@@ -34,6 +36,7 @@ impl Example {
             Example::Dialogs => "Dialogs",
             Example::Scrolling => "Scrolling",
             Example::Text => "Text",
+            Example::Developers => "Developers",
         }
     }
 
@@ -44,6 +47,7 @@ impl Example {
             Example::Dialogs => "A picker over content",
             Example::Scrolling => "More than fits on a panel",
             Example::Text => "Fonts, weights and truncation",
+            Example::Developers => "Everything at once, on one screen",
         }
     }
 
@@ -55,6 +59,7 @@ impl Example {
             Example::Dialogs => present(screens::Dialogs::new()),
             Example::Scrolling => present(screens::Scrolling::new()),
             Example::Text => present(screens::TextSizes::new()),
+            Example::Developers => present(crate::DevelopersScreen::new()),
         };
     }
 }
