@@ -8,8 +8,8 @@ cargo run -p xpui-gallery -- --board badger2040    # a 296x128 e-ink strip
 cargo run -p xpui-gallery -- --board tufty2040     # a 320x240 colour LCD
 ```
 
-Arrows move focus, Enter opens, Escape goes back, H is the home gesture, Q
-quits. Clicking is a tap and the scroll wheel is a swipe.
+Arrows move focus, Enter opens, Backspace goes back, H is the home gesture, Q
+or Escape quits. Clicking is a tap and the scroll wheel is a swipe.
 
 ## The same screens, on every panel
 
@@ -35,8 +35,9 @@ be — 28 pixels, and a list refuses to paint a row that does not fit.
 
 ## Why it is a library and a binary
 
-The screens live in `src/`, and `main.rs` is six lines that open a window
-around them. That is so the tests can drive every screen without one:
+The screens live in `src/`, and `main.rs` does nothing but read its two flags
+and open a window around them. That is so the tests can drive every screen
+without one:
 `tests/gallery.rs` walks the menu, opens each example, presses buttons and
 checks what came back; `tests/screenshots.rs` renders the same screens to a
 framebuffer and compares them against goldens.
