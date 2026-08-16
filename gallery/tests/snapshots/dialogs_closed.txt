@@ -1,0 +1,5 @@
+clear
+header      title="Dialogs" subtitle=-
+list        (16,60 448x40) rows=1 selected=0
+  row 0  title="Typeface" subtitle=- value="Serif"
+hints       back=- confirm=- previous=- next=-

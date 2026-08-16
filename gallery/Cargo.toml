@@ -1,0 +1,33 @@
+[package]
+name = "xpui-gallery"
+description = "Example screens built on xpui, runnable in the simulator"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish = false
+
+# A library as well as a binary: the screens are what the tests exercise, and
+# a test cannot open a window.
+[lib]
+name = "gallery"
+path = "src/lib.rs"
+
+[[bin]]
+name = "gallery"
+path = "src/main.rs"
+
+[dependencies]
+xpui.workspace = true
+xpui-chrome.workspace = true
+
+# The simulator links SDL2, so it is a desktop-only dependency. A device build
+# takes the same screens and supplies its own entry point.
+[target.'cfg(not(target_os = "none"))'.dependencies]
+xpui-simulator.workspace = true
+
+[dev-dependencies]
+xpui = { workspace = true, features = ["testing"] }
+xpui-embedded-graphics = { workspace = true, features = ["framebuffer"] }
+embedded-graphics = "0.8"

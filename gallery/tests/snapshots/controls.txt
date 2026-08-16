@@ -1,0 +1,16 @@
+clear
+header      title="Controls" subtitle=-
+text        (16,60) "Brightness" font=1003 regular
+text        (446,60) "60%" font=1003 bold
+text        (33,102) "-" font=1003 regular
+slider      (68,91 344x40) 60/100
+text        (441,102) "+" font=1003 regular
+text        (16,145) "Warmth" font=1003 regular
+text        (446,145) "25%" font=1003 bold
+slider      (16,176 448x40) 25/100
+line        (16,230) -> (463,230)
+list        (16,245 448x40) rows=1 selected=-1
+  row 0  title="Frontlight" subtitle=- value="On"
+text        (16,299) "Downloading" font=1004 regular
+progress    (16,327 448x6) 42/100
+hints       back=- confirm=- previous="-" next="+"

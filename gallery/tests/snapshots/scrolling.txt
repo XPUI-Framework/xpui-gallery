@@ -1,0 +1,32 @@
+clear
+header      title="Scrolling" subtitle=-
+clip        (0,60 480x700)
+sub-header  (16,60 448x17) "A long list" right=-
+list        (16,81 448x1052) rows=24 selected=0
+  row 0  title="Hyphenation" subtitle=- value="On"
+  row 1  title="Justification" subtitle=- value="Off"
+  row 2  title="Margins" subtitle=- value="Off"
+  row 3  title="Line spacing" subtitle=- value="On"
+  row 4  title="Page turn" subtitle=- value="Off"
+  row 5  title="Refresh rate" subtitle=- value="Off"
+  row 6  title="Sleep timer" subtitle=- value="On"
+  row 7  title="Orientation" subtitle=- value="Off"
+  row 8  title="Hyphenation" subtitle=- value="Off"
+  row 9  title="Justification" subtitle=- value="On"
+  row 10  title="Margins" subtitle=- value="Off"
+  row 11  title="Line spacing" subtitle=- value="Off"
+  row 12  title="Page turn" subtitle=- value="On"
+  row 13  title="Refresh rate" subtitle=- value="Off"
+  row 14  title="Sleep timer" subtitle=- value="Off"
+  row 15  title="Orientation" subtitle=- value="On"
+  row 16  title="Hyphenation" subtitle=- value="Off"
+  row 17  title="Justification" subtitle=- value="Off"
+  row 18  title="Margins" subtitle=- value="On"
+  row 19  title="Line spacing" subtitle=- value="Off"
+  row 20  title="Page turn" subtitle=- value="Off"
+  row 21  title="Refresh rate" subtitle=- value="On"
+  row 22  title="Sleep timer" subtitle=- value="Off"
+  row 23  title="Orientation" subtitle=- value="Off"
+clip        none
+scrollbar   (0,60 480x700) content=1073 visible=700 offset=0
+hints       back=- confirm=- previous=- next=-
