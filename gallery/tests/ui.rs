@@ -190,3 +190,54 @@ fn scrolling_reveals_content_that_was_below_the_fold() {
         );
     }
 }
+
+// -- the keys a device actually has ----------------------------------------
+
+/// Every key on a reader's body has to move the selection.
+///
+/// These devices have four keys along the bottom and two on the sides, and a
+/// list is the screen you spend most of your time on. A key that does nothing
+/// there is a key the hardware wasted.
+///
+/// The pairs are not interchangeable in general — the page pair turns pages in
+/// a reader, and Left and Right adjust whatever holds focus — but on a screen
+/// with nothing to adjust and nothing to page, all three walk the list. That is
+/// what the firmware does, and it is why its bottom row is labelled Up and Down
+/// over keys whose pins are called left and right.
+#[test]
+fn every_key_on_the_body_walks_the_list() {
+    for (down, up) in [
+        (Button::Down, Button::Up),
+        (Button::PageForward, Button::PageBack),
+        (Button::Right, Button::Left),
+    ] {
+        let mut ui = Ui::new(gallery::Menu::new(), on(Board::X3));
+
+        ui.press(down);
+        assert!(
+            ui.changed(),
+            "{down:?} did not move the selection — a key on the body that does \
+             nothing on a list screen is a key the device wasted"
+        );
+
+        ui.press(up);
+        assert!(ui.changed(), "{up:?} did not move it back");
+    }
+}
+
+/// Confirm opens whatever is selected, wherever the selection got to.
+#[test]
+fn the_bottom_row_opens_what_it_selected() {
+    let mut ui = Ui::new(gallery::Menu::new(), on(Board::X3));
+
+    ui.press(Button::Right);
+    ui.press(Button::Confirm);
+
+    assert_eq!(ui.depth(), 2, "Select must open the highlighted row");
+    assert!(
+        ui.visible_text().iter().any(|line| line == "Lists"),
+        "moving down once and confirming should open the second example. \
+         Visible: {:#?}",
+        ui.visible_text()
+    );
+}
