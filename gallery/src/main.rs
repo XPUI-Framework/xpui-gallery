@@ -14,6 +14,7 @@
 //! simulator still starts — hangs until something kills it.
 
 use gallery::Menu;
+use gallery::chord::Badge;
 use xpui_simulator::{Board, Panel, Simulator};
 
 fn main() {
@@ -44,7 +45,13 @@ fn main() {
         }
     }
 
-    let mut simulator = Simulator::new(Panel::of(board)).title(format!("xpui — {}", board.name));
+    // The firmware's own reading of its keys. A board with a Back key of its
+    // own is untouched by it; one with three keys along the bottom takes its
+    // Back from a double press of the first, which is the arrangement those
+    // badges' own examples use. See `gallery::chord`.
+    let mut simulator = Simulator::new(Panel::of(board))
+        .title(format!("xpui — {}", board.name))
+        .keys(Badge::default());
     if let Some(count) = frames {
         simulator = simulator.frames(count);
     }
