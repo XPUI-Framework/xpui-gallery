@@ -11,6 +11,24 @@ cargo run -p xpui-gallery -- --board tufty2040     # a 320x240 colour LCD
 Arrows move focus, Enter opens, Backspace goes back, H is the home gesture, Q
 or Escape quits. Clicking is a tap and the scroll wheel is a swipe.
 
+## Three keys, four meanings
+
+The badges have three keys along the bottom edge — `a`, `b`, `c` — and one of
+the four things a screen needs has nowhere to go. So on those boards **`a` is
+select, and pressing it twice quickly is Back**, which is the arrangement
+Pimoroni's own examples use.
+
+That decision is the example's, not the simulator's and not the framework's.
+The simulator delivers what the hardware sent; `src/chord.rs` is what reads two
+presses as one meaning, which is exactly where a firmware would do it.
+
+It is not free. `a` cannot act until it is certain it was not half of a double,
+so **every select on a three-key board waits out 350 ms**. On the Badger's
+e-ink that disappears into the refresh; on the Tufty's LCD you can feel it.
+Boards with four keys along the bottom — every reader here — have a Back key of
+their own and none of this applies to them. See `src/chord.rs` before choosing
+it for a board of your own.
+
 ## The same screens, on every panel
 
 `--board` changes the panel size, the chrome sized for it, and the window
@@ -32,6 +50,8 @@ be — 28 pixels, and a list refuses to paint a row that does not fit.
 | Dialogs | A picker over content, capturing input, dimming what is behind |
 | Scrolling | More rows than fit, and the runtime keeping focus visible |
 | Text | Font roles, weights, and truncation on a character boundary |
+| Typeface | Three families, and changing the one everything is set in |
+| Developers | Everything at once on one screen, ported from CrossPoint |
 
 ## Why it is a library and a binary
 
