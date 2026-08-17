@@ -18,12 +18,16 @@
 
 extern crate alloc;
 
+pub mod chord;
 pub mod developers;
+pub mod fonts;
 pub mod heap;
 pub mod menu;
 pub mod screens;
+pub mod typeface;
 mod units;
 
 pub use developers::DevelopersScreen;
 pub use menu::Menu;
+pub use typeface::Typefaces;
 pub use units::Units;

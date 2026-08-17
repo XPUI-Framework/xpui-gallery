@@ -21,6 +21,10 @@ path = "src/main.rs"
 [dependencies]
 xpui.workspace = true
 xpui-chrome.workspace = true
+# The typefaces this example adds are assembled with the backend's own macro,
+# and the picker asks the backend to change family. Both are the same backend
+# the RP2040 binaries already link, so this is not a desktop-only dependency.
+xpui-embedded-graphics.workspace = true
 
 # The simulator links SDL2, so it is a desktop-only dependency. A device build
 # takes the same screens and supplies its own entry point.
