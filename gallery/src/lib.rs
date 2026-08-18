@@ -27,6 +27,25 @@ pub mod screens;
 pub mod typeface;
 mod units;
 
+/// The board tutorial, proven from here.
+///
+/// It lives with `examples/rp2040`, where somebody flashing a Badger will look
+/// for it, but that crate is **empty off the device**: its dependencies sit
+/// behind a bare-metal `cfg`, so a host has nothing to compile a snippet
+/// against. This crate has the board, the palette and the framebuffer its
+/// snippets use.
+///
+/// **Here rather than in `xpui-embedded-graphics`** because that crate is
+/// published, and `include_str!` reaching out to `examples/` would ship a
+/// package that cannot build: the file is not in it and structurally cannot
+/// be. This one is `publish = false`.
+///
+/// The same arrangement, and the same reason, as `examples/tutorial` proving
+/// `crates/xpui/docs/tutorial.md`.
+#[cfg(doctest)]
+#[doc = include_str!("../../rp2040/docs/tutorial.md")]
+mod board_tutorial {}
+
 pub use developers::DevelopersScreen;
 pub use menu::Menu;
 pub use typeface::Typefaces;
