@@ -45,10 +45,10 @@ fn main() {
         }
     }
 
-    // The firmware's own reading of its keys. A board with a Back key of its
-    // own is untouched by it; one with three keys along the bottom takes its
-    // Back from a double press of the first, which is the arrangement those
-    // badges' own examples use. See `gallery::chord`.
+    // The firmware's own reading of its keys. Every board here has a Back key
+    // of its own, so this passes them all straight through; it earns its keep
+    // on a board with three keys and no spare, which folds Back into a double
+    // press. See `gallery::chord`.
     let mut simulator = Simulator::new(Panel::of(board))
         .title(format!("xpui — {}", board.name))
         .keys(Badge::default());

@@ -11,23 +11,23 @@ cargo run -p xpui-gallery -- --board tufty2040     # a 320x240 colour LCD
 Arrows move focus, Enter opens, Backspace goes back, H is the home gesture, Q
 or Escape quits. Clicking is a tap and the scroll wheel is a swipe.
 
-## Three keys, four meanings
+## Three keys, and a spare
 
-The badges have three keys along the bottom edge — `a`, `b`, `c` — and one of
-the four things a screen needs has nowhere to go. So on those boards **`a` is
-select, and pressing it twice quickly is Back**, which is the arrangement
-Pimoroni's own examples use.
+The badges have three keys along the bottom edge — `a`, `b`, `c` — and a
+dedicated up/down pair beside the panel. Five keys for four jobs, so **`a` is
+Back and `b` confirms**, in the order the framework's own row has always been:
+a key means the same thing here as on a reader. `c` has nothing on it.
 
-That decision is the example's, not the simulator's and not the framework's.
-The simulator delivers what the hardware sent; `src/chord.rs` is what reads two
-presses as one meaning, which is exactly where a firmware would do it.
+That was not always true. While a badge was taken to be three keys and nothing
+else, Back had nowhere of its own and was folded into a double press of `a` —
+which cost every select a wait to find out whether a second press was coming.
+No board here is arranged that way now, and none pays that wait.
 
-It is not free. `a` cannot act until it is certain it was not half of a double,
-so **every select on a three-key board waits out 350 ms**. On the Badger's
-e-ink that disappears into the refresh; on the Tufty's LCD you can feel it.
-Boards with four keys along the bottom — every reader here — have a Back key of
-their own and none of this applies to them. See `src/chord.rs` before choosing
-it for a board of your own.
+`src/chord.rs` still implements it, because a board with three keys and no
+spare is a real shape and this is where a firmware would read two presses as
+one meaning — the simulator delivers what the hardware sent, and what it
+*means* is the firmware's decision. See it before choosing that arrangement for
+a board of your own, and note what it costs.
 
 ## The same screens, on every panel
 

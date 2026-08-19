@@ -1,9 +1,14 @@
 //! Two presses of one key, meaning something a second key would have meant.
 //!
-//! A badge has three keys along its bottom edge and no room for a fourth, so
-//! Back has nowhere of its own to live. Pressing the first key twice in quick
-//! succession stands in for it — the same trick a mouse plays with its one
-//! button, and the same one these boards' own examples play.
+//! A board with three keys along its bottom edge and no spare has nowhere to
+//! put Back. Pressing the first key twice in quick succession stands in for it
+//! — the same trick a mouse plays with its one button.
+//!
+//! **No board in `Board::ALL` is arranged this way.** The Badger and the Tufty
+//! each have three keys *and* an up/down pair, so they spend the first on Back
+//! and never enter this. It is kept because that shape is real, and because
+//! reading two presses as one meaning is the firmware's job wherever it
+//! happens.
 //!
 //! Driven by `(key, timestamp)` so it can be tested without a window.
 //!
@@ -18,10 +23,8 @@
 //! out [`DOUBLE_PRESS_MS`]**. That is the price of the arrangement, and it is
 //! not free:
 //!
-//! | Board | refresh | the wait, felt |
-//! |---|---|---|
-//! | Badger 2040 | ~900ms e-ink | lost in the panel |
-//! | Tufty 2040 | LCD, immediate | a third of a second of nothing |
+//! On a panel that takes most of a second to refresh the wait is lost in it; on
+//! an immediate LCD it is a third of a second of nothing.
 //!
 //! Only the stand-in key pays it. Every other key on the row acts on the
 //! frame it was pressed, and a board with four keys has a Back of its own and
