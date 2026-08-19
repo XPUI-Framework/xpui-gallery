@@ -32,6 +32,7 @@
 //! button that was already there.
 
 use xpui::Button;
+use xpui_chrome::RowKey;
 
 /// How long a second press has to arrive to count as part of the first.
 ///
@@ -95,10 +96,18 @@ impl Doubles {
 
 /// The key that carries Back on a board whose bottom row has no Back key.
 ///
-/// Only a three-key row: a board with four has a key for it, and one with none
-/// takes Back from its touchscreen.
-pub fn back_stands_on(hint_slots: u8) -> Option<Button> {
-    (hint_slots == 3).then_some(Button::Confirm)
+/// Asked of the row itself rather than of how long it is. Those were the same
+/// question while every three-key row spent its keys on Confirm, Previous and
+/// Next — but a board with three keys along the bottom *and* an up/down pair
+/// elsewhere has one to spare, gives it to Back, and needs no stand-in at all.
+/// Counting keys would still charge it the double-press delay for a key it
+/// has.
+pub fn back_stands_on(row: &[RowKey]) -> Option<Button> {
+    // An empty row is a board with no keys along the bottom at all: Back comes
+    // from its touchscreen, and there is no key here to borrow. "Has no Back
+    // key" is true of it and means the opposite of what it means for a badge,
+    // which is the one place asking the row rather than its length needs help.
+    (!row.is_empty() && !row.contains(&RowKey::Back)).then_some(Button::Confirm)
 }
 
 /// The whole arrangement: recognise the double press, and hold the select back
@@ -197,7 +206,7 @@ impl xpui_simulator::Keys for Badge {
         self.pressed(
             press.button,
             press.now,
-            back_stands_on(press.board.tokens.hint_slots),
+            back_stands_on(press.board.tokens.row),
         )
     }
 

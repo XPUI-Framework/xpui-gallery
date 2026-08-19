@@ -5,6 +5,7 @@ use std::sync::{Mutex, MutexGuard};
 use gallery::Menu;
 use gallery::chord::{Badge, Chord, DOUBLE_PRESS_MS, Doubles, back_stands_on};
 use xpui::{App, Button};
+use xpui_chrome::RowKey;
 use xpui_simulator::{Board, Keypad, Panel, Session, open_frame};
 
 /// `Session::new` installs the process-wide host, so one test at a time.
@@ -16,22 +17,67 @@ fn serial() -> MutexGuard<'static, ()> {
         .unwrap_or_else(|poisoned| poisoned.into_inner())
 }
 
-/// The first key of a three-key row carries Back; a four-key row has its own.
+/// A row without a Back key borrows the first one; a row with its own does not.
+///
+/// Asked of the row, not of its length. A three-key row that spends a key on
+/// Back — which is what both Pimoroni boards now do — must not be charged the
+/// double-press delay for a key it has.
 #[test]
-fn only_a_three_key_row_borrows_a_key_for_back() {
-    assert_eq!(back_stands_on(3), Some(Button::Confirm));
-    assert_eq!(back_stands_on(4), None, "a four-key row has a Back key");
+fn only_a_row_without_back_borrows_a_key_for_it() {
+    use RowKey::{Back, Confirm, Unassigned};
+
     assert_eq!(
-        back_stands_on(0),
+        back_stands_on(NO_BACK_KEY),
+        Some(Button::Confirm),
+        "no key of its own for Back, so the first one carries it"
+    );
+    assert_eq!(
+        back_stands_on(HAS_BACK_KEY),
+        None,
+        "a reader's row has a Back key"
+    );
+    assert_eq!(
+        back_stands_on(&[Back, Confirm, Unassigned]),
+        None,
+        "three keys, but one of them is Back — no stand-in needed"
+    );
+    assert_eq!(
+        back_stands_on(&[]),
         None,
         "a touch board takes Back from the glass"
     );
 }
 
+/// The row of a badge with no key to spare for Back.
+const NO_BACK_KEY: &[RowKey] = &[RowKey::Confirm, RowKey::Previous, RowKey::Next];
+
+/// A reader's row, which has one.
+const HAS_BACK_KEY: &[RowKey] = &[
+    RowKey::Back,
+    RowKey::Confirm,
+    RowKey::Previous,
+    RowKey::Next,
+];
+
+/// A three-key badge: a, b and c along the bottom and nothing down the edges,
+/// so there is no key to spare for Back and it is borrowed from the first.
+///
+/// Nothing in `Board::ALL` is arranged this way any more — the Badger and the
+/// Tufty both have an up/down pair and give their first key to Back. The
+/// arrangement is still what this module exists for, so the tests name it
+/// outright rather than borrowing a board that has since grown out of it.
+fn three_key_badge() -> Board {
+    let mut board = Board::BADGER_2040;
+    board.tokens = board
+        .tokens
+        .with_row(&[RowKey::Confirm, RowKey::Previous, RowKey::Next]);
+    board
+}
+
 #[test]
 fn two_quick_presses_are_back() {
     let mut doubles = Doubles::default();
-    let back = back_stands_on(3);
+    let back = back_stands_on(NO_BACK_KEY);
 
     assert_eq!(
         doubles.press(Button::Confirm, 0, back),
@@ -44,7 +90,7 @@ fn two_quick_presses_are_back() {
 #[test]
 fn two_slow_presses_are_two_presses() {
     let mut doubles = Doubles::default();
-    let back = back_stands_on(3);
+    let back = back_stands_on(NO_BACK_KEY);
 
     doubles.press(Button::Confirm, 0, back);
     assert_eq!(
@@ -59,7 +105,7 @@ fn two_slow_presses_are_two_presses() {
 #[test]
 fn a_third_press_starts_again() {
     let mut doubles = Doubles::default();
-    let back = back_stands_on(3);
+    let back = back_stands_on(NO_BACK_KEY);
 
     doubles.press(Button::Confirm, 0, back);
     assert_eq!(doubles.press(Button::Confirm, 100, back), Chord::Back);
@@ -73,7 +119,7 @@ fn a_third_press_starts_again() {
 #[test]
 fn a_different_key_between_them_breaks_the_pair() {
     let mut doubles = Doubles::default();
-    let back = back_stands_on(3);
+    let back = back_stands_on(NO_BACK_KEY);
 
     doubles.press(Button::Confirm, 0, back);
     doubles.press(Button::Left, 50, back);
@@ -88,7 +134,7 @@ fn a_different_key_between_them_breaks_the_pair() {
 #[test]
 fn only_the_borrowed_key_doubles() {
     let mut doubles = Doubles::default();
-    let back = back_stands_on(3);
+    let back = back_stands_on(NO_BACK_KEY);
 
     assert_eq!(
         doubles.press(Button::Left, 0, back),
@@ -104,7 +150,7 @@ fn only_the_borrowed_key_doubles() {
 #[test]
 fn a_board_with_a_back_key_never_borrows_one() {
     let mut doubles = Doubles::default();
-    let back = back_stands_on(Board::X3.tokens.hint_slots);
+    let back = back_stands_on(Board::X3.tokens.row);
 
     assert_eq!(
         doubles.press(Button::Confirm, 0, back),
@@ -128,7 +174,7 @@ fn a_board_with_a_back_key_never_borrows_one() {
 #[test]
 fn the_borrowed_key_waits_out_its_window() {
     let mut badge = Badge::default();
-    let back = back_stands_on(3);
+    let back = back_stands_on(NO_BACK_KEY);
 
     assert_eq!(
         badge.pressed(Button::Confirm, 1_000, back),
@@ -152,7 +198,7 @@ fn the_borrowed_key_waits_out_its_window() {
 #[test]
 fn a_held_press_is_delivered_once() {
     let mut badge = Badge::default();
-    let back = back_stands_on(3);
+    let back = back_stands_on(NO_BACK_KEY);
 
     badge.pressed(Button::Confirm, 0, back);
     assert_eq!(badge.due(DOUBLE_PRESS_MS), Some(Button::Confirm));
@@ -168,7 +214,7 @@ fn a_held_press_is_delivered_once() {
 #[test]
 fn a_second_press_cancels_the_one_being_held() {
     let mut badge = Badge::default();
-    let back = back_stands_on(3);
+    let back = back_stands_on(NO_BACK_KEY);
 
     assert_eq!(badge.pressed(Button::Confirm, 0, back), None);
     assert_eq!(
@@ -189,7 +235,7 @@ fn a_second_press_cancels_the_one_being_held() {
 #[test]
 fn the_other_keys_are_not_delayed() {
     let mut badge = Badge::default();
-    let back = back_stands_on(3);
+    let back = back_stands_on(NO_BACK_KEY);
 
     assert_eq!(badge.pressed(Button::Left, 0, back), Some(Button::Left));
     assert_eq!(badge.pressed(Button::Right, 10, back), Some(Button::Right));
@@ -200,7 +246,7 @@ fn the_other_keys_are_not_delayed() {
 #[test]
 fn a_four_key_board_confirms_at_once() {
     let mut badge = Badge::default();
-    let back = back_stands_on(Board::X4.tokens.hint_slots);
+    let back = back_stands_on(Board::X4.tokens.row);
 
     assert_eq!(
         badge.pressed(Button::Confirm, 0, back),
@@ -236,13 +282,7 @@ fn frame(session: &Session, keypad: &mut Keypad, app: &mut App, now: u32, press:
 #[test]
 fn on_a_badge_one_press_opens_a_screen_only_once_its_window_has_shut() {
     let _guard = serial();
-    assert_eq!(
-        Board::BADGER_2040.tokens.hint_slots,
-        3,
-        "this test is about a three-key row"
-    );
-
-    let session = Session::new(Panel::of(Board::BADGER_2040));
+    let session = Session::new(Panel::of(three_key_badge()));
     let mut keypad = Keypad::new(Box::new(Badge::default()));
     let mut app = App::new(Menu::new());
     app.render();
@@ -277,7 +317,7 @@ fn on_a_badge_one_press_opens_a_screen_only_once_its_window_has_shut() {
 #[test]
 fn the_windows_two_ends_meet_exactly_once() {
     let mut badge = Badge::default();
-    let back = back_stands_on(3);
+    let back = back_stands_on(NO_BACK_KEY);
 
     badge.pressed(Button::Confirm, 0, back);
     assert_eq!(
@@ -316,7 +356,7 @@ fn the_windows_two_ends_meet_exactly_once() {
 #[test]
 fn a_press_is_never_overwritten_by_the_one_after_it() {
     let mut badge = Badge::default();
-    let back = back_stands_on(3);
+    let back = back_stands_on(NO_BACK_KEY);
 
     assert_eq!(badge.pressed(Button::Confirm, 0, back), None);
     assert_eq!(
@@ -346,7 +386,7 @@ fn a_press_is_never_overwritten_by_the_one_after_it() {
 #[test]
 fn a_press_just_past_the_window_does_not_swallow_the_select() {
     let _guard = serial();
-    let session = Session::new(Panel::of(Board::BADGER_2040));
+    let session = Session::new(Panel::of(three_key_badge()));
     let mut keypad = Keypad::new(Box::new(Badge::default()));
     let mut app = App::new(Menu::new());
     app.render();
@@ -378,7 +418,7 @@ fn a_press_just_past_the_window_does_not_swallow_the_select() {
 #[test]
 fn on_a_badge_two_presses_go_back() {
     let _guard = serial();
-    let session = Session::new(Panel::of(Board::BADGER_2040));
+    let session = Session::new(Panel::of(three_key_badge()));
     let mut keypad = Keypad::new(Box::new(Badge::default()));
     let mut app = App::new(Menu::new());
     app.push(Menu::new());
