@@ -497,11 +497,16 @@ fn nothing_paints_wider_than_it_measured() {
 /// The same menu in each family, as pixels.
 ///
 /// The proof that a swap reaches the screen rather than only the metrics: a
-/// serif and a mono cannot render as the same image, and if a golden ever
-/// stops differing from another, something has stopped applying.
+/// serif and a mono cannot render as the same image.
+///
+/// **That no two of them are the same image is asserted here**, not left to
+/// whoever reads the directory. Three goldens that quietly became one picture
+/// would still pass a run that only compares each against its own file.
 #[test]
 fn the_menu_in_every_family() {
     let _guard = serial();
+    let mut painted: Vec<(&str, Vec<bool>)> = Vec::new();
+
     for (name, family) in [
         ("typeface_helvetica", &HELVETICA),
         ("typeface_courier", &COURIER),
@@ -512,6 +517,17 @@ fn the_menu_in_every_family() {
         let mut app = App::new(Menu::new());
         app.render();
         backend.with_display(|frame| assert_screenshot(name, frame));
+
+        let pixels = backend.with_display(|frame| frame.pixels.clone());
+        for (earlier, was) in &painted {
+            assert_ne!(
+                was, &pixels,
+                "{name} and {earlier} painted the same pixels, so one of the \
+                 two families is not being applied — and both goldens would \
+                 pass, each against its own copy of the same picture"
+            );
+        }
+        painted.push((name, pixels));
     }
 }
 
