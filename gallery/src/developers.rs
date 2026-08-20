@@ -188,9 +188,10 @@ impl Screen for DevelopersScreen {
         NavigationScreen::new(ScrollView::new(vstack![spacing;
                 Section::new(MEMORY_TITLE, self.memory_usage_view()),
                 Section::new(BENCH_TITLE, self.subtitle_rows()),
-                // A bare slider takes touch only, so the panels without a
-                // touchscreen get the stepper beside it: same value, one focus
-                // stop, driven by Left/Right.
+                // Same value, two controls: a plain track and a stepper with
+                // a glyph at each end. Both are focus stops of their own, so
+                // this row shows the difference between them rather than
+                // working around either.
                 Slider::new(self.level, 100).on_change(Msg::Brightness),
                 Stepper::new(self.level)
                     .on_change(Msg::Brightness)

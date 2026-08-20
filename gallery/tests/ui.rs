@@ -241,3 +241,159 @@ fn the_bottom_row_opens_what_it_selected() {
         ui.visible_text()
     );
 }
+
+// -- a value row, reached and changed with keys -------------------------------
+//
+// A value row has to be reachable by whatever keys a board has. On a board with
+// a Left/Right pair the keys must also keep their meaning; on one without, they
+// deliberately change, and saying so on the panel is still to come.
+
+/// The value beside `label`, for a panel small enough to scroll one out of
+/// view. Reads the first percentage at or after the label rather than counting
+/// from the top, so which rows happen to be on screen does not matter.
+fn value_of(ui: &Ui<Backend<Framebuffer>>, label: &str) -> String {
+    let text = ui.visible_text();
+    let at = text
+        .iter()
+        .position(|line| line == label)
+        .unwrap_or_else(|| panic!("{label:?} is not on screen. Visible: {text:#?}"));
+    text[at..]
+        .iter()
+        .find(|line| line.ends_with('%'))
+        .unwrap_or_else(|| panic!("{label:?} has no value beside it. Visible: {text:#?}"))
+        .clone()
+}
+
+/// Both percentages on the Controls screen, brightness first.
+///
+/// Asserted to be exactly two, so a layout change that adds a third fails here
+/// rather than silently moving which one a caller reads.
+fn percentages(ui: &Ui<Backend<Framebuffer>>) -> Vec<String> {
+    let found: Vec<String> = ui
+        .visible_text()
+        .into_iter()
+        .filter(|line| line.ends_with('%'))
+        .collect();
+    assert_eq!(
+        found.len(),
+        2,
+        "Controls should show brightness and warmth. Visible: {:#?}",
+        ui.visible_text()
+    );
+    found
+}
+
+/// The Warmth row can be reached by the keys and changed by them.
+///
+/// The X3 has the pair and no touchscreen, so keys are the only way in. A
+/// slider declaring touch alone is stepped over by Up and Down and never
+/// reached by Left and Right, which leaves the row inert on every button-only
+/// board — the fault a person found by opening the simulator, on a board this
+/// suite already covered.
+#[test]
+fn the_warmth_row_can_be_reached_and_changed() {
+    let mut ui = Ui::new(gallery::Menu::new(), on(Board::X3));
+    open(&mut ui, "Controls");
+
+    let before = percentages(&ui);
+    ui.press(Button::Down);
+    ui.press(Button::Right);
+    let after = percentages(&ui);
+
+    assert_eq!(
+        after[0], before[0],
+        "Down should have left brightness behind, not adjusted it"
+    );
+    assert_ne!(
+        after[1], before[1],
+        "one Down from brightness should focus Warmth, and Right should change it"
+    );
+}
+
+/// A board with no Left/Right pair can still reach and change a value.
+///
+/// The Badger's five keys are Back, Confirm, a bare third, and an up/down pair
+/// that walks the list. With no Left/Right among them a value has to be entered
+/// and left again, so Confirm opens the row and the list keys move it.
+///
+/// What that mode still lacks is any sign of itself on the panel; this pins the
+/// behaviour, not the appearance.
+///
+/// Pinned on a Badger because the other new tests here run on an X3, where the
+/// `!has_left_right_keys()` branch never executes.
+#[test]
+fn a_value_row_is_reachable_on_a_board_with_no_pair() {
+    let mut ui = Ui::new(gallery::Menu::new(), on(Board::BADGER_2040));
+    open(&mut ui, "Controls");
+
+    // Read by label: this panel is 296x128 and scrolls, so which rows are on
+    // screen changes as the focus moves.
+    let before = value_of(&ui, "Warmth");
+
+    // Down walks to the Warmth row; on this board Left and Right do not exist,
+    // so Confirm is the way in and must not fire the control instead.
+    ui.press(Button::Down);
+    ui.press(Button::Confirm);
+    assert_eq!(
+        value_of(&ui, "Warmth"),
+        before,
+        "Confirm opens a value row on a board with no pair; it must not set it"
+    );
+
+    // The keys that walked the list now move the value, which is the whole
+    // reason the mode exists.
+    ui.press(Button::Up);
+    assert_ne!(
+        value_of(&ui, "Warmth"),
+        before,
+        "with the value open, the list keys move it"
+    );
+
+    ui.press(Button::Back);
+    assert_eq!(
+        value_of(&ui, "Warmth"),
+        before,
+        "and Back puts it back exactly"
+    );
+    assert_eq!(ui.depth(), 2, "without leaving the screen");
+}
+
+/// Confirm on a value row does not quietly change what the other keys mean.
+///
+/// Spec 26 opens an edit mode on Confirm that repaints an identical frame: Up
+/// and Down stop moving between rows and adjust instead, and Back stops leaving
+/// the screen. Whatever replaces it has to be visible or must not happen — a
+/// person cannot be expected to discover that four keys changed meaning.
+#[test]
+fn confirm_does_not_silently_change_what_the_keys_mean() {
+    let mut ui = Ui::new(gallery::Menu::new(), on(Board::X3));
+    open(&mut ui, "Controls");
+
+    let before = percentages(&ui);
+    ui.press(Button::Confirm);
+    ui.press(Button::Down);
+
+    assert_eq!(
+        percentages(&ui)[0],
+        before[0],
+        "Down moves between rows; after Confirm it adjusted brightness instead"
+    );
+
+    // And on the row below, which is a `Slider` — an absolute control, whose
+    // trigger resolves at the centre of its own track. Firing that from a focus
+    // rather than a touch is what set it to 50%.
+    let before = percentages(&ui);
+    ui.press(Button::Confirm);
+    assert_eq!(
+        percentages(&ui)[1],
+        before[1],
+        "Confirm on a focused slider must not jump it to the middle of its track"
+    );
+
+    ui.press(Button::Back);
+    assert_eq!(
+        ui.depth(),
+        1,
+        "Back leaves the screen; after Confirm it was spent cancelling an edit"
+    );
+}
