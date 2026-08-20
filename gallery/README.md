@@ -37,9 +37,24 @@ framework makes and the one worth checking by eye.
 
 It is worth checking early. A Badger 2040 has a 90-pixel content band; a
 screen that looks spacious at 480 × 800 may have nowhere to put its third row.
-`tests/screenshots.rs` renders the menu on every board and asserts the content
-band is not empty, because with the *default* chrome on that panel it would
-be — 28 pixels, and a list refuses to paint a row that does not fit.
+
+`tests/screenshots.rs` renders **every screen on every board** — the seven
+examples below plus the menu and the picker open over its content, across the
+seven panels of `Board::ALL`, sixty-three committed PNGs. Beside each capture
+it asserts that the content band is not blank, because with the *default*
+chrome a Badger's is 28 pixels and a list refuses to paint a row that does not
+fit, so the screen comes back empty. It also asks for the screen's name in the
+header band, and for ink in the hint bar on the boards that have one. Neither
+of those is asked of every capture, and the file says which and why — the
+picker's header, for instance, is under a dialog, so the question would pass
+there whatever the dialog did.
+
+The board-by-board captures are what catch a fault only one panel has. Moving
+`Tokens::SMALL.list_row_height` by one pixel moves six of them and fails no
+other test in the repository; the module doc of that file counts two more
+mutations and says which boards each reaches. Goldens are compared by
+[`xpui-embedded-graphics`](../../crates/backend/embedded_graphics/), pixel for
+pixel with no tolerance.
 
 ## What is in it
 
@@ -60,8 +75,8 @@ and open a window around them. That is so the tests can drive every screen
 without one:
 `tests/gallery.rs` walks the menu, opens each example, presses buttons and
 checks what came back; `tests/screenshots.rs` renders the same screens to a
-framebuffer and compares each one against a PNG committed in
-`tests/screenshots/`, pixel for pixel.
+framebuffer, once per board, and compares each one against a PNG committed in
+`tests/screenshots/` as `<screen>_<board slug>.png`, pixel for pixel.
 
 ```bash
 cargo test -p xpui-gallery
@@ -69,6 +84,12 @@ UPDATE_SNAPSHOTS=1 cargo test -p xpui-gallery   # accept intended changes
 open examples/gallery/tests/screenshots/        # then look at them
 open target/diff/                               # after a failure
 ```
+
+`UPDATE_SNAPSHOTS=1` rewrites **every** golden the run touched, and that is
+more than the pictures: sixty-three board captures from `tests/screenshots.rs`,
+three families from `tests/typeface.rs` as `family_<name>.png`, and five text
+snapshots of the draw calls under `tests/snapshots/` from `tests/gallery.rs`.
+Seventy-one assertions, in one keystroke. Read the diff before committing.
 
 ## It is also the framework's dogfood
 

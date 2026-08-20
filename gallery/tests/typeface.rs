@@ -497,7 +497,18 @@ fn nothing_paints_wider_than_it_measured() {
 /// The same menu in each family, as pixels.
 ///
 /// The proof that a swap reaches the screen rather than only the metrics: a
-/// serif and a mono cannot render as the same image.
+/// serif and a mono cannot render as the same image. The goldens are named
+/// `family_<name>` rather than `typeface_<name>` because `screenshots.rs` puts
+/// `typeface_<board slug>` — the Typeface screen, on each panel — in the same
+/// directory, and one prefix meaning two axes is a collision waiting for a
+/// family called after a board.
+///
+/// `family_helvetica.png` is the same frame as `menu_x4.png` today, so a
+/// change to the menu moves both. That is a coincidence of three defaults
+/// rather than a rule — Helvetica is what a backend opens in, this file
+/// installs 480x800, and `Board::X4.tokens` happens to be `Tokens::DEFAULT`.
+/// Nothing asserts it and nothing should: they are captures of different
+/// questions that currently have the same answer.
 ///
 /// **That no two of them are the same image is asserted here**, not left to
 /// whoever reads the directory. Three goldens that quietly became one picture
@@ -508,9 +519,9 @@ fn the_menu_in_every_family() {
     let mut painted: Vec<(&str, Vec<bool>)> = Vec::new();
 
     for (name, family) in [
-        ("typeface_helvetica", &HELVETICA),
-        ("typeface_courier", &COURIER),
-        ("typeface_century", &CENTURY),
+        ("family_helvetica", &HELVETICA),
+        ("family_courier", &COURIER),
+        ("family_century", &CENTURY),
     ] {
         let backend = install();
         backend.set_family(family);
