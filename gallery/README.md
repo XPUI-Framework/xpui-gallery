@@ -64,7 +64,7 @@ pixel with no tolerance.
 | Lists | Rows, subtitles, values, and how a subtitle changes row height |
 | Dialogs | A picker over content, capturing input, dimming what is behind |
 | Scrolling | More rows than fit, and the runtime keeping focus visible |
-| Text | Font roles, weights, and truncation on a character boundary |
+| Text | Font roles and weights, and a line running off the panel — `Text` paints what it is given |
 | Typeface | Three families, and changing the one everything is set in |
 | Developers | Everything at once on one screen, ported from CrossPoint |
 
