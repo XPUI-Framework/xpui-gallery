@@ -25,6 +25,7 @@ use crate::units::Units;
 /// through its own i18n, and standing one up for a single example would be
 /// more machinery than the example.
 const UNIT_LABELS: [&str; 2] = ["Bytes", "Kilobytes"];
+const SCREEN_TITLE: &str = "Developers";
 const MEMORY_TITLE: &str = "Memory";
 const TOTAL_HEAP: &str = "Total";
 const USED_HEAP: &str = "Used";
@@ -204,6 +205,10 @@ impl Screen for DevelopersScreen {
                 .selected(self.units_index())
                 .on_select(Msg::ChoseUnits),
         )
+    }
+
+    fn title(&self) -> Option<&'static str> {
+        Some(SCREEN_TITLE)
     }
 
     /// Back closes the picker rather than the screen. The runtime does not
