@@ -248,6 +248,12 @@ fn the_bottom_row_opens_what_it_selected() {
 // a Left/Right pair the keys must also keep their meaning; on one without, they
 // deliberately change, and saying so on the panel is still to come.
 
+/// `percent` moved by `delta`, as the panel would render it.
+fn plus(percent: &str, delta: i32) -> String {
+    let value: i32 = percent.trim_end_matches('%').parse().expect("a percentage");
+    format!("{}%", value + delta)
+}
+
 /// The value beside `label`, for a panel small enough to scroll one out of
 /// view. Reads the first percentage at or after the label rather than counting
 /// from the top, so which rows happen to be on screen does not matter.
@@ -341,20 +347,21 @@ fn a_value_row_is_reachable_on_a_board_with_no_pair() {
     );
 
     // The keys that walked the list now move the value, which is the whole
-    // reason the mode exists. The framework holds it while they do, so the
-    // screen's own readout beside the row does not move until Confirm — what
-    // follows the keys is the knob, which this harness reads as pixels rather
-    // than as text.
+    // reason the mode exists — and **the number moves with them**, because the
+    // control draws it from the copy the framework is holding. A screen cannot:
+    // it is not told the working value, and a label it built in `update` would
+    // stand still while the track moved.
+    let two_up = plus(&before, 2);
     ui.press(Button::Up);
     ui.press(Button::Up);
     assert_eq!(
         value_of(&ui, "Warmth"),
-        before,
-        "the screen is told nothing while the edit is open"
+        two_up,
+        "the number on the panel follows the keys"
     );
 
-    // Cancel: the screen never heard about the two Ups, so there is nothing to
-    // put back and the readout was never wrong.
+    // Cancel: the screen was never told about the two Ups, so the panel goes
+    // back to what the screen holds and the screen never changed.
     ui.press(Button::Back);
     assert_eq!(
         value_of(&ui, "Warmth"),
@@ -368,20 +375,74 @@ fn a_value_row_is_reachable_on_a_board_with_no_pair() {
     ui.press(Button::Up);
     ui.press(Button::Up);
     ui.press(Button::Confirm);
-    let expected = format!(
-        "{}%",
-        before
-            .trim_end_matches('%')
-            .parse::<i32>()
-            .expect("a percentage")
-            + 2
-    );
     assert_eq!(
         value_of(&ui, "Warmth"),
-        expected,
-        "Confirm commits exactly what the keys moved the value to"
+        two_up,
+        "Confirm commits exactly what the panel was showing"
     );
     assert_eq!(ui.depth(), 2, "and still without leaving the screen");
+}
+
+/// A finger on the control's name does not set its value.
+///
+/// The line above the track carries the name and the number, and it is part of
+/// the control — but not part of the *track*. A touch region covering the whole
+/// control would convert a tap on the word "Warmth" into a position along the
+/// track and set the value to whatever that happened to be, which is a change
+/// nobody asked for and no undo for it.
+#[test]
+fn a_tap_on_a_controls_name_changes_nothing() {
+    let mut ui = Ui::new(gallery::Menu::new(), on(Board::X4));
+    open(&mut ui, "Controls");
+
+    let before = value_of(&ui, "Warmth");
+    let name = ui
+        .rect_of_text("Warmth")
+        .expect("the control draws its own name");
+
+    // The far end of the name's line, where the track's own value would be
+    // near its maximum — so a region wrongly covering this reads as a large
+    // change rather than a subtle one.
+    ui.tap_at(Point::new(
+        name.x() + name.width() - 1,
+        name.y() + name.height() / 2,
+    ));
+    assert_eq!(value_of(&ui, "Warmth"), before, "the name is not the track");
+}
+
+/// An open control stays on the panel, name and number and all.
+///
+/// The rect a control declares is what the runtime scrolls into view, and a
+/// short panel scrolls the *minimum* that brings it there. A stop covering only
+/// the track therefore settles with the track's top edge at the top of the
+/// viewport and the line above it — the name, and the number the keys are
+/// moving — clipped away. The whole point of the readout is lost one keypress
+/// from where the other tests stand: a person holds Up and watches a knob move
+/// under nothing.
+///
+/// Reached by walking *past* the row and coming back, because that is what
+/// makes the runtime scroll upward to reach it.
+#[test]
+fn an_open_value_row_keeps_its_number_on_screen() {
+    let mut ui = Ui::new(gallery::Menu::new(), on(Board::BADGER_2040));
+    open(&mut ui, "Controls");
+
+    // Down past Warmth to the toggle, then back up to it.
+    ui.press(Button::Down);
+    ui.press(Button::Down);
+    ui.press(Button::Up);
+    ui.press(Button::Confirm);
+    ui.press(Button::Up);
+
+    let visible = ui.visible_text();
+    assert!(
+        visible.iter().any(|line| line == "Warmth"),
+        "the open control's name has to stay on the panel: {visible:?}"
+    );
+    assert!(
+        visible.iter().any(|line| line == "26%"),
+        "and so does the number the key just moved: {visible:?}"
+    );
 }
 
 /// Confirm on a value row does not quietly change what the other keys mean.

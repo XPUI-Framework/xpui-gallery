@@ -4,13 +4,10 @@
 //! it looks like, and an `update()` that is the only place its state changes.
 //! Read them in order — `Controls` is the shortest useful one.
 
-use alloc::format;
-use alloc::string::String;
-
 use xpui::screen::Screen;
 use xpui::{
     Divider, Font, Hint, List, ListRow, Modal, NavigationScreen, ProgressBar, Scrim, ScrollView,
-    Section, Slider, Stepper, Text, Toggle, View, hstack, vstack,
+    Section, Slider, Stepper, Text, Toggle, View, vstack,
 };
 
 // -- controls --------------------------------------------------------------
@@ -21,28 +18,6 @@ pub struct Controls {
     warmth: i32,
     frontlight: bool,
     downloaded: u32,
-    /// The two percentages, already formatted.
-    ///
-    /// `body()` runs on every paint *and* on every frame that carries input,
-    /// so a `format!` in there allocates several times a second and drags
-    /// `core::fmt` into the binary. Building the string in `update()` costs
-    /// one allocation per actual change instead.
-    labels: Labels,
-}
-
-#[derive(Clone)]
-struct Labels {
-    brightness: String,
-    warmth: String,
-}
-
-impl Labels {
-    fn of(brightness: i32, warmth: i32) -> Self {
-        Labels {
-            brightness: format!("{brightness}%"),
-            warmth: format!("{warmth}%"),
-        }
-    }
 }
 
 #[derive(Clone, Copy)]
@@ -66,7 +41,6 @@ impl Controls {
             warmth: 25,
             frontlight: true,
             downloaded: 42,
-            labels: Labels::of(60, 25),
         }
     }
 }
@@ -78,13 +52,20 @@ impl Screen for Controls {
         NavigationScreen::new(ScrollView::new(vstack![14;
             // A stepper is one focus stop but three touch targets: the two
             // glyphs nudge, the track sets an absolute value.
-            label("Brightness", &self.labels.brightness),
+            // The name and the number are the control's, not the screen's. A
+            // screen cannot draw the number: while an edit is open the
+            // framework holds the value and does not tell the screen, so a
+            // label built in `update` stands still while the track moves.
             Stepper::new(self.brightness)
                 .on_change(ControlsMsg::Brightness)
-                .on_step(ControlsMsg::BrightnessStep),
+                .on_step(ControlsMsg::BrightnessStep)
+                .title("Brightness")
+                .readout("%"),
 
-            label("Warmth", &self.labels.warmth),
-            Slider::new(self.warmth, 100).on_change(ControlsMsg::Warmth),
+            Slider::new(self.warmth, 100)
+                .on_change(ControlsMsg::Warmth)
+                .title("Warmth")
+                .readout("%"),
 
             Divider::new(),
 
@@ -114,22 +95,11 @@ impl Screen for Controls {
             // ever writes `!self.something`.
             ControlsMsg::Frontlight(next) => self.frontlight = next,
         }
-        self.labels = Labels::of(self.brightness, self.warmth);
     }
 
     fn title(&self) -> Option<&'static str> {
         Some("Controls")
     }
-}
-
-/// A name on the left and its value on the right — the row every settings
-/// screen is made of, and a plain function is a first-class component.
-fn label<M: Clone + 'static>(name: &str, value: &str) -> impl View<M> + use<M> {
-    hstack![8;
-        Text::new(name),
-        xpui::Spacer::new(),
-        Text::new(value).bold(),
-    ]
 }
 
 // -- lists -----------------------------------------------------------------
