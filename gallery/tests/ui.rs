@@ -341,21 +341,47 @@ fn a_value_row_is_reachable_on_a_board_with_no_pair() {
     );
 
     // The keys that walked the list now move the value, which is the whole
-    // reason the mode exists.
+    // reason the mode exists. The framework holds it while they do, so the
+    // screen's own readout beside the row does not move until Confirm — what
+    // follows the keys is the knob, which this harness reads as pixels rather
+    // than as text.
     ui.press(Button::Up);
-    assert_ne!(
+    ui.press(Button::Up);
+    assert_eq!(
         value_of(&ui, "Warmth"),
         before,
-        "with the value open, the list keys move it"
+        "the screen is told nothing while the edit is open"
     );
 
+    // Cancel: the screen never heard about the two Ups, so there is nothing to
+    // put back and the readout was never wrong.
     ui.press(Button::Back);
     assert_eq!(
         value_of(&ui, "Warmth"),
         before,
-        "and Back puts it back exactly"
+        "and Back leaves it exactly where it was"
     );
     assert_eq!(ui.depth(), 2, "without leaving the screen");
+
+    // Confirm: the same two Ups, committed in one go.
+    ui.press(Button::Confirm);
+    ui.press(Button::Up);
+    ui.press(Button::Up);
+    ui.press(Button::Confirm);
+    let expected = format!(
+        "{}%",
+        before
+            .trim_end_matches('%')
+            .parse::<i32>()
+            .expect("a percentage")
+            + 2
+    );
+    assert_eq!(
+        value_of(&ui, "Warmth"),
+        expected,
+        "Confirm commits exactly what the keys moved the value to"
+    );
+    assert_eq!(ui.depth(), 2, "and still without leaving the screen");
 }
 
 /// Confirm on a value row does not quietly change what the other keys mean.

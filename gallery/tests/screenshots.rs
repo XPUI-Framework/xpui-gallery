@@ -4,20 +4,20 @@
 //! same screens through the `embedded_graphics` backend and the `chrome`
 //! components, so what it checks is the whole stack a device would run.
 //!
-//! **Nine screens across seven boards: sixty-three goldens, about 134 kB.**
+//! **Ten screens across seven boards: seventy goldens, about 142 kB.**
 //! The chrome is sized from tokens, and a token that lays out comfortably on a
 //! 600x448 Inky Frame can leave a 296x128 Badger with a content band of a few
 //! dozen pixels — so one panel proves nothing about the other six.
 //!
 //! The cost is small enough to read in a diff: these are 1-bit panels, and the
-//! files average 2,128 bytes. What it buys is measured rather than argued, by
+//! files average 2,070 bytes. What it buys is measured rather than argued, by
 //! moving one token by one pixel and counting:
 //!
 //! | one pixel added to | moves | on |
 //! |---|---|---|
-//! | `Tokens::DEFAULT.list_row_height` | 30 captures | 5 boards |
-//! | `Tokens::SMALL.list_row_height` | 6 captures | the Badger |
-//! | `Tokens::SMALL.header_height` | 9 captures | the Badger |
+//! | `Tokens::DEFAULT.list_row_height` | 35 captures | 5 boards |
+//! | `Tokens::SMALL.list_row_height` | 7 captures | the Badger |
+//! | `Tokens::SMALL.header_height` | 10 captures | the Badger |
 //!
 //! `Tokens::SMALL` is the preset no other board in `Board::ALL` uses. Moving
 //! its `list_row_height` was **green across the whole repository** until this
@@ -44,8 +44,8 @@
 //! ```
 //!
 //! **A blessed golden is an assertion you have made**: that this is what the
-//! screen should look like on that panel. Blessing sixty-three at once makes
-//! sixty-three of them in one keystroke, and a regression blessed is a
+//! screen should look like on that panel. Blessing seventy at once makes
+//! seventy of them in one keystroke, and a regression blessed is a
 //! regression with a test agreeing with it — the one failure mode this whole
 //! technique has. Open the directory and read the diff before committing.
 //!
@@ -305,6 +305,60 @@ fn the_menu_on_every_board() {
 fn the_controls_example_on_every_board() {
     on_every_board("controls", Header::Titled, |_backend, _board| {
         App::new(Controls::new()).render();
+        Ok(())
+    });
+}
+
+/// The same screen with a value **open**, on every board.
+///
+/// [`34`](../../../docs/specs/34-a-mode-you-can-see.md)'s third state, and the
+/// only capture of it. Without this the suite holds `Idle` and `Focused` on
+/// seven panels and `Editing` on none — a state that draws correctly on one
+/// panel and not another is exactly what this file exists to notice, and the
+/// mode is what that whole spec is about.
+///
+/// **Three boards never open one**, and that is the assertion for them rather
+/// than an exemption: the X3, the X4 and the Inky Frame have a Left/Right pair,
+/// so Confirm nudges nothing and opens nothing, and their goldens here are the
+/// unopened screen. A change that started opening an edit where the pair exists
+/// would move those three.
+#[test]
+fn a_value_open_for_editing_on_every_board() {
+    on_every_board("controls_open", Header::Titled, |backend, board| {
+        let mut app = App::new(Controls::new());
+        app.render();
+
+        // Down onto the slider, then Confirm — which opens it on a board with
+        // no pair and does nothing at all on one that has it.
+        for key in [Button::Down, Button::Confirm] {
+            backend.begin_frame(0);
+            backend.press(key);
+            app.tick();
+            app.render();
+        }
+
+        let open = backend.with_display(|frame| frame.pixels.clone());
+
+        // The control frame: the same screen with nothing focused and nothing
+        // open. Without it "these pixels" is a picture rather than a claim.
+        App::new(Controls::new()).render();
+        let closed = backend.with_display(|frame| frame.pixels.clone());
+
+        // Put the state under test back, since that comparison repainted.
+        app.render();
+
+        if board.has_left_right_keys() {
+            // Confirm neither nudges nor opens where the pair exists, so this
+            // board's golden is the unopened screen and has to stay that way.
+            return Ok(());
+        }
+        if open == closed {
+            return Err(
+                "the panel is pixel-identical with a value open: the mode is \
+                 invisible on this board, whatever its golden holds"
+                    .into(),
+            );
+        }
         Ok(())
     });
 }

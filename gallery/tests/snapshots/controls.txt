@@ -4,7 +4,7 @@ clip        (0,60 480x700)
 text        (16,60) "Brightness" font=1003 regular
 text        (446,60) "60%" font=1003 bold
 text        (33,102) "-" font=1003 regular
-slider      (68,91 344x40) 60/100
+slider      (68,91 344x40) 60/100 focused
 text        (441,102) "+" font=1003 regular
 text        (16,145) "Warmth" font=1003 regular
 text        (446,145) "25%" font=1003 bold
@@ -16,4 +16,4 @@ text        (16,299) "Downloading" font=1004 regular
 progress    (16,327 448x6) 42/100
 clip        none
 scrollbar   (0,60 480x700) content=273 visible=700 offset=0
-hints       back=- confirm=- previous="-" next="+"
+hints       back=- confirm="<edit>" previous="-" next="+"

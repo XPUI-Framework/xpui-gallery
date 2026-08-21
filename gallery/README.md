@@ -39,8 +39,9 @@ It is worth checking early. A Badger 2040 has a 90-pixel content band; a
 screen that looks spacious at 480 × 800 may have nowhere to put its third row.
 
 `tests/screenshots.rs` renders **every screen on every board** — the seven
-examples below plus the menu and the picker open over its content, across the
-seven panels of `Board::ALL`, sixty-three committed PNGs. Beside each capture
+examples below, plus the menu, the picker open over its content, and the
+Controls screen with a value open for editing, across the seven panels of
+`Board::ALL`: seventy committed PNGs. Beside each capture
 it asserts that the content band is not blank, because with the *default*
 chrome a Badger's is 28 pixels and a list refuses to paint a row that does not
 fit, so the screen comes back empty. It also asks for the screen's name in the
@@ -86,10 +87,10 @@ open target/diff/                               # after a failure
 ```
 
 `UPDATE_SNAPSHOTS=1` rewrites **every** golden the run touched, and that is
-more than the pictures: sixty-three board captures from `tests/screenshots.rs`,
+more than the pictures: seventy board captures from `tests/screenshots.rs`,
 three families from `tests/typeface.rs` as `family_<name>.png`, and five text
 snapshots of the draw calls under `tests/snapshots/` from `tests/gallery.rs`.
-Seventy-one assertions, in one keystroke. Read the diff before committing.
+Seventy-eight assertions, in one keystroke. Read the diff before committing.
 
 ## It is also the framework's dogfood
 
