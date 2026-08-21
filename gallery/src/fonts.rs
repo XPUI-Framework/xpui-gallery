@@ -15,10 +15,15 @@
 //!
 //! | what [`FAMILIES`] holds | firmware |
 //! |---|---|
-//! | `&[&HELVETICA]` — the backend's own, alone | 103 KB |
-//! | all three | 206 KB |
+//! | `&[&HELVETICA]` — the backend's own, alone | 121 KB |
+//! | all three | 221 KB |
 //!
-//! **The two extra families double the firmware.** That is 5% of a 2MB
+//! Measured with `arm-none-eabi-size` on the linked `badger2040` binary, by
+//! shortening this list and rebuilding. The absolute figures move with every
+//! change to the firmware; the difference between the rows is the number that
+//! means something, and it has held at **99.8 KB**.
+//!
+//! **The two extra families nearly double the firmware.** That is 5% of a 2MB
 //! RP2040's flash and perfectly affordable there; it would be impossible on a
 //! part with 256K. This is exactly why the backend ships one family and takes
 //! whatever else it is given: a board that cannot spare the space shortens
