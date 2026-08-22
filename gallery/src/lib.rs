@@ -46,7 +46,50 @@ mod units;
 #[doc = include_str!("../../rp2040/docs/tutorial.md")]
 mod board_tutorial {}
 
+use xpui_boards::Board;
+use xpui_chrome::{Labels, Metrics};
+use xpui_eg::{Backend, DrawTarget, Fonts, Palette};
+
 pub use developers::DevelopersScreen;
 pub use menu::Menu;
 pub use typeface::Typefaces;
 pub use units::Units;
+
+/// The measurements a board's panel gets.
+///
+/// Chrome derives these from a size and a scale and knows nothing about
+/// boards; deciding which board gets which is the application's call, and this
+/// is the one place the gallery makes it. [`wire`] paints through it and
+/// `tests/physical.rs` measures through it, so a screenshot and a millimetre
+/// figure cannot disagree about what was on the glass.
+///
+/// `!board.touch` is the hint band: a board driven by a finger has no keys to
+/// label, so the band would be a strip of words naming keys nobody has.
+pub fn metrics_for(board: Board) -> Metrics {
+    Metrics::for_device(
+        board.width,
+        board.height,
+        board.ui_scale_percent,
+        !board.touch,
+    )
+}
+
+/// A backend wired for a board, as a firmware would wire one.
+///
+/// The framework does not know what a board is any more: `Metrics` comes from
+/// the panel's size and scale, `Labels` from its size, `KeyRow` and the
+/// Left/Right pair from the hardware. Composing those is the application's
+/// job, and this is the application — so this is what a firmware's frame loop
+/// looks like, and what the conformance suite drives.
+pub fn wire<D>(display: D, board: Board, palette: Palette<D::Color>) -> Backend<D>
+where
+    D: DrawTarget,
+{
+    let metrics = metrics_for(board);
+    Backend::new(display, palette)
+        .with_metrics(metrics)
+        .with_labels(Labels::for_panel(board.width, board.height))
+        .with_keys(board.keys)
+        .with_left_right_keys(board.has_left_right_keys())
+        .with_fonts(Fonts::for_metrics(&metrics))
+}

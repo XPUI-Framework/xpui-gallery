@@ -6,27 +6,31 @@
 //! passes its own fit check and paints over whatever is beneath it, which on a
 //! small panel is the button hint bar.
 
+use gallery::{metrics_for, wire};
 use xpui::host::RowField;
 use xpui::{Rect, Renderer};
+use xpui_boards::Board;
 use xpui_chrome::draw_list;
-use xpui_eg::{Backend, Board, Palette};
+use xpui_eg::Palette;
 use xpui_screenshot::Framebuffer;
 
 fn probe(board: Board) {
-    let backend = Backend::leak_for_board(
+    let backend = wire(
         Framebuffer::new(board.width, board.height),
         board,
         Palette::INK_IS_ON,
-    );
+    )
+    .leaked();
     // Safety: this file is its own process and nothing else installs a host.
     unsafe { xpui::host::install(backend) };
 
-    let top = board.metrics.content_top();
-    let band = board.height - top - board.metrics.button_hints_height;
+    let metrics = metrics_for(board);
+    let top = metrics.content_top();
+    let band = board.height - top - metrics.button_hints_height;
     let rect = Rect::new(0, top, board.width, band);
 
     Renderer::clear();
-    draw_list(&board.metrics, rect, 8, 0, &|index, field| match field {
+    draw_list(&metrics, rect, 8, 0, &|index, field| match field {
         RowField::Title => Some(["Controls", "Lists", "Dialogs", "Scrolling"][index % 4]),
         RowField::Subtitle => Some("Slider, stepper, toggle, progress"),
         _ => None,
@@ -42,8 +46,8 @@ fn probe(board: Board) {
         RowField::Subtitle => Some("Slider, stepper, toggle, progress"),
         _ => None,
     };
-    let painted = xpui_chrome::rows_that_fit(&board.metrics, rect, 8, &cells);
-    let stride = xpui_chrome::row_height(&board.metrics, 8, &cells) + board.metrics.list_row_gap;
+    let painted = xpui_chrome::rows_that_fit(&metrics, rect, 8, &cells);
+    let stride = xpui_chrome::row_height(&metrics, 8, &cells) + metrics.list_row_gap;
     let floor = top + (painted as i32) * stride;
 
     let below = backend.with_display(|f| f.ink_in(0, floor, board.width, board.height - floor));

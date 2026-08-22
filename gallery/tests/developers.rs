@@ -6,18 +6,21 @@
 //! behind it, a slider and a stepper disagreeing about the value they share.
 
 use gallery::heap::Heap;
+use gallery::wire;
 use gallery::{DevelopersScreen, Menu, Units};
 use xpui::testing::Ui;
 use xpui::{Button, Screen};
-use xpui_eg::{Backend, Board, Palette};
+use xpui_boards::Board;
+use xpui_eg::{Backend, Palette};
 use xpui_screenshot::Framebuffer;
 
 fn on(board: Board) -> &'static Backend<Framebuffer> {
-    Backend::leak_for_board(
+    wire(
         Framebuffer::new(board.width, board.height),
         board,
         Palette::INK_IS_ON,
     )
+    .leaked()
 }
 
 // -- unit ------------------------------------------------------------------

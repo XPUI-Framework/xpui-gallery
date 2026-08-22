@@ -4,9 +4,11 @@
 //! the interesting failures live. A test that drove the runtime directly would
 //! have reported the arrow keys working for as long as they were broken.
 
+use gallery::wire;
 use xpui::testing::Ui;
 use xpui::{Button, Point};
-use xpui_eg::{Backend, Board, Palette};
+use xpui_boards::Board;
+use xpui_eg::{Backend, Palette};
 use xpui_screenshot::Framebuffer;
 
 /// Scrolls the menu until `row` is on screen, then opens it.
@@ -26,11 +28,12 @@ fn open(ui: &mut Ui<Backend<Framebuffer>>, row: &str) {
 }
 
 fn on(board: Board) -> &'static Backend<Framebuffer> {
-    Backend::leak_for_board(
+    wire(
         Framebuffer::new(board.width, board.height),
         board,
         Palette::INK_IS_ON,
     )
+    .leaked()
 }
 
 #[test]

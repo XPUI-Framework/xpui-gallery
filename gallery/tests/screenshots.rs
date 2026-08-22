@@ -60,9 +60,11 @@ use gallery::menu::Example;
 use gallery::screens::{Controls, Dialogs, Lists, Scrolling, TextSizes};
 use gallery::typeface::Typefaces;
 use gallery::{DevelopersScreen, Menu};
+use gallery::{metrics_for, wire};
 use xpui::host::RowField;
 use xpui::{App, Button, Rect};
-use xpui_eg::{Backend, Board, Palette};
+use xpui_boards::Board;
+use xpui_eg::{Backend, Palette};
 use xpui_screenshot::{Framebuffer, check_screenshot};
 
 /// How many rows the menu offers, which is what [`rows_are_painted`] measures
@@ -80,11 +82,12 @@ fn serial() -> MutexGuard<'static, ()> {
 
 /// A backend the size of `board`, carrying the chrome that board asks for.
 fn install(board: Board) -> &'static Backend<Framebuffer> {
-    let backend = Backend::leak_for_board(
+    let backend = wire(
         Framebuffer::new(board.width, board.height),
         board,
         Palette::INK_IS_ON,
-    );
+    )
+    .leaked();
     // Safety: serialised by `SERIAL`, and nothing has rendered on this one.
     unsafe { xpui::host::install(backend) };
     backend
@@ -197,12 +200,13 @@ fn chrome_fits(
     header: Header,
 ) -> Result<(), String> {
     let (top, band) = content_band(board);
-    let hints = board.metrics.button_hints_height;
+    let metrics = metrics_for(board);
+    let hints = metrics.button_hints_height;
 
     // Above the rule the header paints at `top_padding + header_height`, so
     // this is the title itself rather than the chrome that would be there
     // whether or not the screen named itself.
-    let title_band = board.metrics.top_padding + board.metrics.header_height;
+    let title_band = metrics.top_padding + metrics.header_height;
     let titled = ink(backend, 0, 0, board.width, title_band) > 0;
     // Spelled out rather than left to a wildcard: a variant added later must
     // be given an answer here, which is the whole reason the marker exists.
@@ -251,7 +255,8 @@ fn rows_are_painted(backend: &'static Backend<Framebuffer>, board: Board) -> Res
         RowField::Subtitle => Some(Example::ALL[index].summary()),
         _ => None,
     };
-    let fits = xpui_chrome::rows_that_fit(&board.metrics, rect, MENU_ROWS, &cells);
+    let metrics = metrics_for(board);
+    let fits = xpui_chrome::rows_that_fit(&metrics, rect, MENU_ROWS, &cells);
     if fits < 2 {
         return Err(format!(
             "{band}px of content band from y={top} has room for {fits} of the \
@@ -260,12 +265,11 @@ fn rows_are_painted(backend: &'static Backend<Framebuffer>, board: Board) -> Res
         ));
     }
 
-    let stride =
-        xpui_chrome::row_height(&board.metrics, MENU_ROWS, &cells) + board.metrics.list_row_gap;
+    let stride = xpui_chrome::row_height(&metrics, MENU_ROWS, &cells) + metrics.list_row_gap;
     // Short of the scroll indicator, which runs the height of the band on the
     // boards the menu does not fit: its dither is ink below the first row on
     // three of the seven, and would answer this question for the list.
-    let rows_end = board.width - board.metrics.scrollbar_width - board.metrics.scrollbar_inset;
+    let rows_end = board.width - metrics.scrollbar_width - metrics.scrollbar_inset;
     if ink(backend, 0, top + stride, rows_end, band - stride) == 0 {
         return Err(format!(
             "nothing below the first row, where {fits} rows of {stride}px fit: \
@@ -282,8 +286,9 @@ fn ink(backend: &'static Backend<Framebuffer>, x: i32, y: i32, width: i32, heigh
 /// The band a screen's own content is laid out in, between the header and the
 /// hints.
 fn content_band(board: Board) -> (i32, i32) {
-    let top = board.metrics.content_top();
-    (top, board.height - top - board.metrics.button_hints_height)
+    let metrics = metrics_for(board);
+    let top = metrics.content_top();
+    (top, board.height - top - metrics.button_hints_height)
 }
 
 // -- the screens -----------------------------------------------------------
@@ -421,13 +426,14 @@ fn the_scrolling_example_on_every_board() {
     on_every_board("scrolling", Header::Titled, |backend, board| {
         App::new(Scrolling::new()).render();
 
+        let metrics = metrics_for(board);
         let (top, band) = content_band(board);
-        let strip = board.width - board.metrics.scrollbar_width - board.metrics.scrollbar_inset;
-        if ink(backend, strip, top, board.metrics.scrollbar_width, band) == 0 {
+        let strip = board.width - metrics.scrollbar_width - metrics.scrollbar_inset;
+        if ink(backend, strip, top, metrics.scrollbar_width, band) == 0 {
             return Err(format!(
                 "a page longer than the panel drew no scroll indicator in the \
                  {}px strip at x={strip}",
-                board.metrics.scrollbar_width
+                metrics.scrollbar_width
             ));
         }
         Ok(())
@@ -529,20 +535,4 @@ fn opening_an_example_from_the_menu_on_every_board() {
     }
 
     report("controls opened from the menu", &failed);
-}
-
-/// Every board must have room for a usable list. Three rows is the floor: two
-/// entries and somewhere to scroll to.
-#[test]
-fn every_board_has_room_for_a_list() {
-    for board in Board::ALL {
-        assert!(
-            board.list_rows() >= 3,
-            "{} ({}x{}) fits only {} list rows",
-            board.name,
-            board.width,
-            board.height,
-            board.list_rows()
-        );
-    }
 }

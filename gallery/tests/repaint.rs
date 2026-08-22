@@ -9,8 +9,10 @@
 //! pixels are different afterwards.
 
 use gallery::Menu;
+use gallery::wire;
 use xpui::{App, Button};
-use xpui_eg::{Backend, Board, Palette};
+use xpui_boards::Board;
+use xpui_eg::{Backend, Palette};
 use xpui_screenshot::Framebuffer;
 
 /// Every pixel, so a comparison cannot miss a change the way a coarse
@@ -23,11 +25,12 @@ fn pixels(backend: &'static Backend<Framebuffer>) -> Vec<bool> {
 #[test]
 fn pressing_down_changes_the_panel() {
     let board = Board::X4;
-    let backend = Backend::leak_for_board(
+    let backend = wire(
         Framebuffer::new(board.width, board.height),
         board,
         Palette::INK_IS_ON,
-    );
+    )
+    .leaked();
     // Safety: this file is its own process and nothing else installs a host.
     unsafe { xpui::host::install(backend) };
 
