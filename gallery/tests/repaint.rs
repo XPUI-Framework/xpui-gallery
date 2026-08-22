@@ -10,13 +10,14 @@
 
 use gallery::Menu;
 use xpui::{App, Button};
-use xpui_eg::{Backend, Board, Framebuffer, Palette};
+use xpui_eg::{Backend, Board, Palette};
+use xpui_screenshot::Framebuffer;
 
 /// Every pixel, so a comparison cannot miss a change the way a coarse
 /// thumbnail or an ink count can — two frames can have identical ink totals
 /// and look completely different.
 fn pixels(backend: &'static Backend<Framebuffer>) -> Vec<bool> {
-    backend.with_display(|frame| frame.pixels.clone())
+    backend.with_display(|frame| frame.ink().to_vec())
 }
 
 #[test]

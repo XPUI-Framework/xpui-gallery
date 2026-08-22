@@ -6,7 +6,8 @@
 
 use xpui::testing::Ui;
 use xpui::{Button, Point};
-use xpui_eg::{Backend, Board, Framebuffer, Palette};
+use xpui_eg::{Backend, Board, Palette};
+use xpui_screenshot::Framebuffer;
 
 /// Scrolls the menu until `row` is on screen, then opens it.
 fn open(ui: &mut Ui<Backend<Framebuffer>>, row: &str) {

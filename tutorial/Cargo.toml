@@ -24,5 +24,7 @@ xpui-simulator.workspace = true
 
 [dev-dependencies]
 xpui = { workspace = true, features = ["testing"] }
-xpui-embedded-graphics = { workspace = true, features = ["framebuffer", "testing"] }
+xpui-embedded-graphics = { workspace = true, features = ["testing"] }
+# The host-side framebuffer its screenshot tests draw into.
+xpui-screenshot = { workspace = true, features = ["golden"] }
 embedded-graphics = "0.8"

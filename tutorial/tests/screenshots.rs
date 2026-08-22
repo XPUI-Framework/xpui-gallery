@@ -11,7 +11,8 @@ use std::sync::{Mutex, MutexGuard};
 use tutorial::{Message, SleepTimer};
 use xpui::App;
 use xpui::screen::Screen;
-use xpui_eg::{Backend, Framebuffer, Palette, assert_screenshot};
+use xpui_eg::{Backend, Palette};
+use xpui_screenshot::{Framebuffer, assert_screenshot};
 
 const WIDTH: i32 = 480;
 const HEIGHT: i32 = 800;

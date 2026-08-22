@@ -9,7 +9,8 @@ use gallery::heap::Heap;
 use gallery::{DevelopersScreen, Menu, Units};
 use xpui::testing::Ui;
 use xpui::{Button, Screen};
-use xpui_eg::{Backend, Board, Framebuffer, Palette};
+use xpui_eg::{Backend, Board, Palette};
+use xpui_screenshot::Framebuffer;
 
 fn on(board: Board) -> &'static Backend<Framebuffer> {
     Backend::leak_for_board(

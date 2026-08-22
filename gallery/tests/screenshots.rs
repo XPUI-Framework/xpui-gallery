@@ -62,7 +62,8 @@ use gallery::typeface::Typefaces;
 use gallery::{DevelopersScreen, Menu};
 use xpui::host::RowField;
 use xpui::{App, Button, Rect};
-use xpui_eg::{Backend, Board, Framebuffer, Palette, check_screenshot};
+use xpui_eg::{Backend, Board, Palette};
+use xpui_screenshot::{Framebuffer, check_screenshot};
 
 /// How many rows the menu offers, which is what [`rows_are_painted`] measures
 /// against.
@@ -337,12 +338,12 @@ fn a_value_open_for_editing_on_every_board() {
             app.render();
         }
 
-        let open = backend.with_display(|frame| frame.pixels.clone());
+        let open = backend.with_display(|frame| frame.ink().to_vec());
 
         // The control frame: the same screen with nothing focused and nothing
         // open. Without it "these pixels" is a picture rather than a claim.
         App::new(Controls::new()).render();
-        let closed = backend.with_display(|frame| frame.pixels.clone());
+        let closed = backend.with_display(|frame| frame.ink().to_vec());
 
         // Put the state under test back, since that comparison repainted.
         app.render();
@@ -396,14 +397,14 @@ fn the_picker_on_every_board() {
     on_every_board("picker", Header::Overlaid, |backend, _board| {
         let mut app = App::new(Dialogs::new());
         app.render();
-        let closed = backend.with_display(|frame| frame.pixels.clone());
+        let closed = backend.with_display(|frame| frame.ink().to_vec());
 
         backend.begin_frame(0);
         backend.press(Button::Confirm);
         app.tick();
         app.render();
 
-        if backend.with_display(|frame| frame.pixels == closed) {
+        if backend.with_display(|frame| frame.ink() == closed) {
             return Err(
                 "the panel is pixel-identical with the picker open: no dialog \
                  and no scrim, whatever the golden of it holds"
@@ -495,7 +496,7 @@ fn opening_an_example_from_the_menu_on_every_board() {
     for board in Board::ALL {
         let direct = install(board);
         App::new(Controls::new()).render();
-        let expected = direct.with_display(|frame| frame.pixels.clone());
+        let expected = direct.with_display(|frame| frame.ink().to_vec());
 
         let arrived = install(board);
         let mut app = App::new(Menu::new());
@@ -516,7 +517,7 @@ fn opening_an_example_from_the_menu_on_every_board() {
         }
 
         app.render();
-        if arrived.with_display(|frame| frame.pixels != expected) {
+        if arrived.with_display(|frame| frame.ink() != expected) {
             failed.push((
                 board,
                 "Controls opened from the menu does not paint what Controls \

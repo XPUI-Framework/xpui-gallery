@@ -9,7 +9,8 @@
 use xpui::host::RowField;
 use xpui::{Rect, Renderer};
 use xpui_chrome::draw_list;
-use xpui_eg::{Backend, Board, Framebuffer, Palette};
+use xpui_eg::{Backend, Board, Palette};
+use xpui_screenshot::Framebuffer;
 
 fn probe(board: Board) {
     let backend = Backend::leak_for_board(

@@ -13,9 +13,10 @@ use gallery::typeface::Typefaces;
 use xpui::host::{Canvas, FontRole, FontStyle, TextMetrics};
 use xpui::{App, Button, Screen};
 use xpui_eg::{
-    Backend, Family, FontRenderer, Fonts, Framebuffer, HELVETICA, Palette, Piece, Tier,
-    assert_screenshot, clear_chosen_family, font_tier, u8g2,
+    Backend, Family, FontRenderer, Fonts, HELVETICA, Palette, Piece, Tier, clear_chosen_family,
+    font_tier, u8g2,
 };
+use xpui_screenshot::{Framebuffer, assert_screenshot};
 use xpui_simulator::{Board, Control, Panel, Session};
 
 const WIDTH: i32 = 480;
@@ -529,7 +530,7 @@ fn the_menu_in_every_family() {
         app.render();
         backend.with_display(|frame| assert_screenshot(name, frame));
 
-        let pixels = backend.with_display(|frame| frame.pixels.clone());
+        let pixels = backend.with_display(|frame| frame.ink().to_vec());
         for (earlier, was) in &painted {
             assert_ne!(
                 was, &pixels,
