@@ -5,7 +5,7 @@
 //! components, so what it checks is the whole stack a device would run.
 //!
 //! **Ten screens across seven boards: seventy goldens, about 142 kB.**
-//! The chrome is sized from tokens, and a token that lays out comfortably on a
+//! The chrome is sized from metrics, and a measurement that lays out comfortably on a
 //! 600x448 Inky Frame can leave a 296x128 Badger with a content band of a few
 //! dozen pixels — so one panel proves nothing about the other six.
 //!
@@ -15,11 +15,11 @@
 //!
 //! | one pixel added to | moves | on |
 //! |---|---|---|
-//! | `Tokens::DEFAULT.list_row_height` | 35 captures | 5 boards |
-//! | `Tokens::SMALL.list_row_height` | 7 captures | the Badger |
-//! | `Tokens::SMALL.header_height` | 10 captures | the Badger |
+//! | `Metrics::DEFAULT.list_row_height` | 35 captures | 5 boards |
+//! | `Metrics::SMALL.list_row_height` | 7 captures | the Badger |
+//! | `Metrics::SMALL.header_height` | 10 captures | the Badger |
 //!
-//! `Tokens::SMALL` is the preset no other board in `Board::ALL` uses. Moving
+//! `Metrics::SMALL` is the preset no other board in `Board::ALL` uses. Moving
 //! its `list_row_height` was **green across the whole repository** until this
 //! file captured more than the menu: the menu's rows carry subtitles, so they
 //! are laid out from `list_row_height_with_subtitle`, and the single Badger
@@ -197,12 +197,12 @@ fn chrome_fits(
     header: Header,
 ) -> Result<(), String> {
     let (top, band) = content_band(board);
-    let hints = board.tokens.button_hints_height;
+    let hints = board.metrics.button_hints_height;
 
     // Above the rule the header paints at `top_padding + header_height`, so
     // this is the title itself rather than the chrome that would be there
     // whether or not the screen named itself.
-    let title_band = board.tokens.top_padding + board.tokens.header_height;
+    let title_band = board.metrics.top_padding + board.metrics.header_height;
     let titled = ink(backend, 0, 0, board.width, title_band) > 0;
     // Spelled out rather than left to a wildcard: a variant added later must
     // be given an answer here, which is the whole reason the marker exists.
@@ -251,7 +251,7 @@ fn rows_are_painted(backend: &'static Backend<Framebuffer>, board: Board) -> Res
         RowField::Subtitle => Some(Example::ALL[index].summary()),
         _ => None,
     };
-    let fits = xpui_chrome::rows_that_fit(&board.tokens, rect, MENU_ROWS, &cells);
+    let fits = xpui_chrome::rows_that_fit(&board.metrics, rect, MENU_ROWS, &cells);
     if fits < 2 {
         return Err(format!(
             "{band}px of content band from y={top} has room for {fits} of the \
@@ -261,11 +261,11 @@ fn rows_are_painted(backend: &'static Backend<Framebuffer>, board: Board) -> Res
     }
 
     let stride =
-        xpui_chrome::row_height(&board.tokens, MENU_ROWS, &cells) + board.tokens.list_row_gap;
+        xpui_chrome::row_height(&board.metrics, MENU_ROWS, &cells) + board.metrics.list_row_gap;
     // Short of the scroll indicator, which runs the height of the band on the
     // boards the menu does not fit: its dither is ink below the first row on
     // three of the seven, and would answer this question for the list.
-    let rows_end = board.width - board.tokens.scrollbar_width - board.tokens.scrollbar_inset;
+    let rows_end = board.width - board.metrics.scrollbar_width - board.metrics.scrollbar_inset;
     if ink(backend, 0, top + stride, rows_end, band - stride) == 0 {
         return Err(format!(
             "nothing below the first row, where {fits} rows of {stride}px fit: \
@@ -282,8 +282,8 @@ fn ink(backend: &'static Backend<Framebuffer>, x: i32, y: i32, width: i32, heigh
 /// The band a screen's own content is laid out in, between the header and the
 /// hints.
 fn content_band(board: Board) -> (i32, i32) {
-    let top = board.tokens.content_top();
-    (top, board.height - top - board.tokens.button_hints_height)
+    let top = board.metrics.content_top();
+    (top, board.height - top - board.metrics.button_hints_height)
 }
 
 // -- the screens -----------------------------------------------------------
@@ -422,12 +422,12 @@ fn the_scrolling_example_on_every_board() {
         App::new(Scrolling::new()).render();
 
         let (top, band) = content_band(board);
-        let strip = board.width - board.tokens.scrollbar_width - board.tokens.scrollbar_inset;
-        if ink(backend, strip, top, board.tokens.scrollbar_width, band) == 0 {
+        let strip = board.width - board.metrics.scrollbar_width - board.metrics.scrollbar_inset;
+        if ink(backend, strip, top, board.metrics.scrollbar_width, band) == 0 {
             return Err(format!(
                 "a page longer than the panel drew no scroll indicator in the \
                  {}px strip at x={strip}",
-                board.tokens.scrollbar_width
+                board.metrics.scrollbar_width
             ));
         }
         Ok(())

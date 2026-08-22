@@ -21,12 +21,12 @@ fn probe(board: Board) {
     // Safety: this file is its own process and nothing else installs a host.
     unsafe { xpui::host::install(backend) };
 
-    let top = board.tokens.content_top();
-    let band = board.height - top - board.tokens.button_hints_height;
+    let top = board.metrics.content_top();
+    let band = board.height - top - board.metrics.button_hints_height;
     let rect = Rect::new(0, top, board.width, band);
 
     Renderer::clear();
-    draw_list(&board.tokens, rect, 8, 0, &|index, field| match field {
+    draw_list(&board.metrics, rect, 8, 0, &|index, field| match field {
         RowField::Title => Some(["Controls", "Lists", "Dialogs", "Scrolling"][index % 4]),
         RowField::Subtitle => Some("Slider, stepper, toggle, progress"),
         _ => None,
@@ -42,8 +42,8 @@ fn probe(board: Board) {
         RowField::Subtitle => Some("Slider, stepper, toggle, progress"),
         _ => None,
     };
-    let painted = xpui_chrome::rows_that_fit(&board.tokens, rect, 8, &cells);
-    let stride = xpui_chrome::row_height(&board.tokens, 8, &cells) + board.tokens.list_row_gap;
+    let painted = xpui_chrome::rows_that_fit(&board.metrics, rect, 8, &cells);
+    let stride = xpui_chrome::row_height(&board.metrics, 8, &cells) + board.metrics.list_row_gap;
     let floor = top + (painted as i32) * stride;
 
     let below = backend.with_display(|f| f.ink_in(0, floor, board.width, board.height - floor));

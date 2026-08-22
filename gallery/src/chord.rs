@@ -35,7 +35,7 @@
 //! button that was already there.
 
 use xpui::Button;
-use xpui_chrome::RowKey;
+use xpui::host::{KeyRow, RowKey};
 
 /// How long a second press has to arrive to count as part of the first.
 ///
@@ -105,12 +105,12 @@ impl Doubles {
 /// elsewhere has one to spare, gives it to Back, and needs no stand-in at all.
 /// Counting keys would still charge it the double-press delay for a key it
 /// has.
-pub fn back_stands_on(row: &[RowKey]) -> Option<Button> {
+pub fn back_stands_on(row: KeyRow) -> Option<Button> {
     // An empty row is a board with no keys along the bottom at all: Back comes
     // from its touchscreen, and there is no key here to borrow. "Has no Back
     // key" is true of it and means the opposite of what it means for a badge,
     // which is the one place asking the row rather than its length needs help.
-    (!row.is_empty() && !row.contains(&RowKey::Back)).then_some(Button::Confirm)
+    (!row.is_empty() && !row.contains(RowKey::Back)).then_some(Button::Confirm)
 }
 
 /// The whole arrangement: recognise the double press, and hold the select back
@@ -206,11 +206,7 @@ impl Badge {
 #[cfg(not(target_os = "none"))]
 impl xpui_simulator::Keys for Badge {
     fn translate(&mut self, press: xpui_simulator::Press) -> Option<Button> {
-        self.pressed(
-            press.button,
-            press.now,
-            back_stands_on(press.board.tokens.row),
-        )
+        self.pressed(press.button, press.now, back_stands_on(press.board.keys))
     }
 
     fn due(&mut self, now: u32) -> Option<Button> {

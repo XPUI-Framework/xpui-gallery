@@ -4,8 +4,8 @@ use std::sync::{Mutex, MutexGuard};
 
 use gallery::Menu;
 use gallery::chord::{Badge, Chord, DOUBLE_PRESS_MS, Doubles, back_stands_on};
+use xpui::host::{KeyRow, RowKey};
 use xpui::{App, Button};
-use xpui_chrome::RowKey;
 use xpui_simulator::{Board, Keypad, Panel, Session, open_frame};
 
 /// `Session::new` installs the process-wide host, so one test at a time.
@@ -37,27 +37,27 @@ fn only_a_row_without_back_borrows_a_key_for_it() {
         "a reader's row has a Back key"
     );
     assert_eq!(
-        back_stands_on(&[Back, Confirm, Unassigned]),
+        back_stands_on(KeyRow::new(&[Back, Confirm, Unassigned])),
         None,
         "three keys, but one of them is Back — no stand-in needed"
     );
     assert_eq!(
-        back_stands_on(&[]),
+        back_stands_on(KeyRow::new(&[])),
         None,
         "a touch board takes Back from the glass"
     );
 }
 
 /// The row of a badge with no key to spare for Back.
-const NO_BACK_KEY: &[RowKey] = &[RowKey::Confirm, RowKey::Previous, RowKey::Next];
+const NO_BACK_KEY: KeyRow = KeyRow::new(&[RowKey::Confirm, RowKey::Previous, RowKey::Next]);
 
 /// A reader's row, which has one.
-const HAS_BACK_KEY: &[RowKey] = &[
+const HAS_BACK_KEY: KeyRow = KeyRow::new(&[
     RowKey::Back,
     RowKey::Confirm,
     RowKey::Previous,
     RowKey::Next,
-];
+]);
 
 /// A three-key badge: a, b and c along the bottom and nothing down the edges,
 /// so there is no key to spare for Back and it is borrowed from the first.
@@ -68,9 +68,7 @@ const HAS_BACK_KEY: &[RowKey] = &[
 /// outright rather than borrowing a board that has since grown out of it.
 fn three_key_badge() -> Board {
     let mut board = Board::BADGER_2040;
-    board.tokens = board
-        .tokens
-        .with_row(&[RowKey::Confirm, RowKey::Previous, RowKey::Next]);
+    board.keys = KeyRow::new(&[RowKey::Confirm, RowKey::Previous, RowKey::Next]);
     board
 }
 
@@ -150,7 +148,7 @@ fn only_the_borrowed_key_doubles() {
 #[test]
 fn a_board_with_a_back_key_never_borrows_one() {
     let mut doubles = Doubles::default();
-    let back = back_stands_on(Board::X3.tokens.row);
+    let back = back_stands_on(Board::X3.keys);
 
     assert_eq!(
         doubles.press(Button::Confirm, 0, back),
@@ -246,7 +244,7 @@ fn the_other_keys_are_not_delayed() {
 #[test]
 fn a_four_key_board_confirms_at_once() {
     let mut badge = Badge::default();
-    let back = back_stands_on(Board::X4.tokens.row);
+    let back = back_stands_on(Board::X4.keys);
 
     assert_eq!(
         badge.pressed(Button::Confirm, 0, back),

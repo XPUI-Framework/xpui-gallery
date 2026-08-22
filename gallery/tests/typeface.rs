@@ -188,7 +188,7 @@ fn a_swap_re_derives_the_sizes_from_the_chrome() {
     let smuggled = backend.line_height(backend.font(FontRole::Ui));
     backend.set_family(&HELVETICA);
     let derived = backend.line_height(backend.font(FontRole::Ui));
-    let wanted = Fonts::for_tokens(backend.tokens()).ui;
+    let wanted = Fonts::for_metrics(backend.metrics()).ui;
 
     assert_ne!(
         smuggled, derived,
@@ -203,7 +203,7 @@ fn a_swap_re_derives_the_sizes_from_the_chrome() {
 
     for family in FAMILIES {
         backend.set_family(family);
-        let row = backend.tokens().list_row_height;
+        let row = backend.metrics().list_row_height;
         let band = backend.line_height(backend.font(FontRole::Ui));
         assert!(
             band < row,
@@ -507,7 +507,7 @@ fn nothing_paints_wider_than_it_measured() {
 /// `family_helvetica.png` is the same frame as `menu_x4.png` today, so a
 /// change to the menu moves both. That is a coincidence of three defaults
 /// rather than a rule — Helvetica is what a backend opens in, this file
-/// installs 480x800, and `Board::X4.tokens` happens to be `Tokens::DEFAULT`.
+/// installs 480x800, and `Board::X4.metrics` happens to be `Metrics::DEFAULT`.
 /// Nothing asserts it and nothing should: they are captures of different
 /// questions that currently have the same answer.
 ///
