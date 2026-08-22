@@ -9,7 +9,7 @@
 use gallery::{metrics_for, wire};
 use xpui::host::RowField;
 use xpui::{Rect, Renderer};
-use xpui_boards::Board;
+use xpui_boards_core::Board;
 use xpui_chrome::draw_list;
 use xpui_eg::Palette;
 use xpui_screenshot::Framebuffer;
@@ -62,7 +62,7 @@ fn probe(board: Board) {
 
 #[test]
 fn a_row_never_paints_below_the_rect_it_was_given() {
-    for board in Board::ALL {
+    for board in gallery::boards::ALL {
         probe(board);
     }
 }

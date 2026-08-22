@@ -4,7 +4,7 @@
 //! put Back. Pressing the first key twice in quick succession stands in for it
 //! — the same trick a mouse plays with its one button.
 //!
-//! **No board in `Board::ALL` is arranged this way.** The Badger and the Tufty
+//! **No board in `crate::boards::ALL` is arranged this way.** The Badger and the Tufty
 //! each have three keys *and* an up/down pair, so they spend the first on Back
 //! and never enter this. It is kept because that shape is real, and because
 //! reading two presses as one meaning is the firmware's job wherever it

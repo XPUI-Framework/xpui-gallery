@@ -41,7 +41,9 @@ screen that looks spacious at 480 × 800 may have nowhere to put its third row.
 `tests/screenshots.rs` renders **every screen on every board** — the seven
 examples below, plus the menu, the picker open over its content, and the
 Controls screen with a value open for editing, across the seven panels of
-`Board::ALL`: seventy committed PNGs. Beside each capture
+[`boards::ALL`](src/boards.rs): seventy committed PNGs. That list is assembled
+here, from three vendor crates, because nothing below this one knows more than
+one vendor. Beside each capture
 it asserts that the content band is not blank, because with the *default*
 chrome a Badger's is 28 pixels and a list refuses to paint a row that does not
 fit, so the screen comes back empty. It also asks for the screen's name in the

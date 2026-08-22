@@ -15,7 +15,9 @@ use std::sync::{Mutex, MutexGuard};
 
 use gallery::{metrics_for, wire};
 use xpui::Font;
-use xpui_boards::Board;
+use xpui_boards_core::Board;
+use xpui_boards_seeed as seeed;
+use xpui_boards_xteink as xteink;
 use xpui_eg::Palette;
 use xpui_screenshot::Framebuffer;
 
@@ -85,7 +87,7 @@ fn body_line_px(board: Board) -> i32 {
 
 #[test]
 fn a_list_row_can_be_read_on_every_panel() {
-    for board in Board::ALL {
+    for board in gallery::boards::ALL {
         let row = tenths(board, metrics_for(board).list_row_height);
         assert!(
             row >= ROW_FLOOR,
@@ -101,7 +103,7 @@ fn a_list_row_can_be_read_on_every_panel() {
 
 #[test]
 fn a_row_on_a_touch_board_is_big_enough_to_tap() {
-    for board in Board::ALL.into_iter().filter(|board| board.touch) {
+    for board in gallery::boards::ALL.into_iter().filter(|board| board.touch) {
         let row = tenths(board, metrics_for(board).list_row_height);
         assert!(
             row >= TOUCH_ROW_FLOOR,
@@ -116,7 +118,7 @@ fn a_row_on_a_touch_board_is_big_enough_to_tap() {
 
 #[test]
 fn a_touch_target_is_the_size_of_a_finger() {
-    for board in Board::ALL.into_iter().filter(|board| board.touch) {
+    for board in gallery::boards::ALL.into_iter().filter(|board| board.touch) {
         let target = tenths(board, metrics_for(board).min_touch_size);
         assert!(
             target >= TOUCH_TARGET_FLOOR,
@@ -136,7 +138,7 @@ fn a_touch_target_is_the_size_of_a_finger() {
 fn body_text_can_be_read_on_every_panel() {
     let _guard = serial();
 
-    for board in Board::ALL {
+    for board in gallery::boards::ALL {
         let line = tenths(board, body_line_px(board));
         assert!(
             line >= LINE_FLOOR,
@@ -160,7 +162,7 @@ fn body_text_can_be_read_on_every_panel() {
 fn a_reader_gets_the_body_text_the_firmware_gets() {
     let _guard = serial();
 
-    for board in [Board::X4, Board::X4_PRO, Board::STICKY] {
+    for board in [xteink::X4, xteink::X4_PRO, seeed::STICKY] {
         let line = tenths(board, body_line_px(board));
         assert!(
             line >= READER_LINE_FLOOR,
@@ -180,7 +182,7 @@ fn a_reader_gets_the_body_text_the_firmware_gets() {
 fn the_type_fits_the_chrome_it_is_painted_into() {
     let _guard = serial();
 
-    for board in Board::ALL {
+    for board in gallery::boards::ALL {
         let line = body_line_px(board);
         assert!(
             line < metrics_for(board).list_row_height,
@@ -213,12 +215,12 @@ fn the_type_fits_the_chrome_it_is_painted_into() {
 /// honest measurement of what the scale buys.
 #[test]
 fn the_same_panel_gets_bigger_chrome_when_a_finger_drives_it() {
-    let buttons = tenths(Board::X4, metrics_for(Board::X4).list_row_height);
-    let finger = tenths(Board::X4_PRO, metrics_for(Board::X4_PRO).list_row_height);
+    let buttons = tenths(xteink::X4, metrics_for(xteink::X4).list_row_height);
+    let finger = tenths(xteink::X4_PRO, metrics_for(xteink::X4_PRO).list_row_height);
 
     assert_eq!(
-        Board::X4.ppi(),
-        Board::X4_PRO.ppi(),
+        xteink::X4.ppi(),
+        xteink::X4_PRO.ppi(),
         "this comparison only means something while they share a panel"
     );
     assert!(
@@ -250,7 +252,7 @@ fn every_figure_here_survives_a_second_derivation() {
         "\n{:<14} {:>5} {:>7} {:>9} {:>9} {:>9}",
         "board", "ppi", "scale", "row", "touch", "line"
     );
-    for board in Board::ALL {
+    for board in gallery::boards::ALL {
         let line = body_line_px(board);
         let ppi = board.ppi().expect("a measured panel");
 

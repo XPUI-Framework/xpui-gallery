@@ -7,7 +7,9 @@
 use gallery::wire;
 use xpui::testing::Ui;
 use xpui::{Button, Point};
-use xpui_boards::Board;
+use xpui_boards_core::Board;
+use xpui_boards_pimoroni as pimoroni;
+use xpui_boards_xteink as xteink;
 use xpui_eg::{Backend, Palette};
 use xpui_screenshot::Framebuffer;
 
@@ -38,7 +40,7 @@ fn on(board: Board) -> &'static Backend<Framebuffer> {
 
 #[test]
 fn the_menu_lists_every_example() {
-    let mut ui = Ui::new(gallery::Menu::new(), on(Board::X4));
+    let mut ui = Ui::new(gallery::Menu::new(), on(xteink::X4));
     let text = ui.visible_text();
 
     for title in ["Controls", "Lists", "Dialogs", "Scrolling", "Text"] {
@@ -52,7 +54,7 @@ fn the_menu_lists_every_example() {
 
 #[test]
 fn tapping_a_row_opens_that_example() {
-    let mut ui = Ui::new(gallery::Menu::new(), on(Board::X4));
+    let mut ui = Ui::new(gallery::Menu::new(), on(xteink::X4));
     assert_eq!(ui.depth(), 1);
 
     ui.tap_text("Lists");
@@ -67,7 +69,7 @@ fn tapping_a_row_opens_that_example() {
 
 #[test]
 fn back_returns_to_the_menu() {
-    let mut ui = Ui::new(gallery::Menu::new(), on(Board::X4));
+    let mut ui = Ui::new(gallery::Menu::new(), on(xteink::X4));
     ui.tap_text("Controls");
     assert_eq!(ui.depth(), 2);
 
@@ -78,7 +80,7 @@ fn back_returns_to_the_menu() {
 
 #[test]
 fn moving_the_focus_redraws() {
-    let mut ui = Ui::new(gallery::Menu::new(), on(Board::X4));
+    let mut ui = Ui::new(gallery::Menu::new(), on(xteink::X4));
 
     ui.press(Button::Down);
 
@@ -93,7 +95,7 @@ fn moving_the_focus_redraws() {
 #[test]
 #[should_panic(expected = "nothing on screen shows")]
 fn tapping_a_label_that_is_not_there_says_so() {
-    let mut ui = Ui::new(gallery::Menu::new(), on(Board::X4));
+    let mut ui = Ui::new(gallery::Menu::new(), on(xteink::X4));
     ui.tap_text("Setings");
 }
 
@@ -101,7 +103,7 @@ fn tapping_a_label_that_is_not_there_says_so() {
 /// resolving to the nearest control.
 #[test]
 fn tapping_empty_space_opens_nothing() {
-    let mut ui = Ui::new(gallery::Menu::new(), on(Board::X4));
+    let mut ui = Ui::new(gallery::Menu::new(), on(xteink::X4));
 
     ui.tap_at(Point::new(2, 2));
 
@@ -120,7 +122,7 @@ fn every_row_opens_the_example_it_names() {
         ("Dialogs", "Dialogs"),
         ("Scrolling", "Scrolling"),
     ] {
-        let mut ui = Ui::new(gallery::Menu::new(), on(Board::X4));
+        let mut ui = Ui::new(gallery::Menu::new(), on(xteink::X4));
         ui.tap_text(row);
 
         assert_eq!(ui.depth(), 2, "tapping {row:?} opened nothing");
@@ -142,7 +144,7 @@ fn every_row_opens_the_example_it_names() {
 #[test]
 fn every_example_opens_on_the_smallest_panel() {
     for row in ["Controls", "Lists", "Dialogs", "Scrolling", "Text"] {
-        let mut ui = Ui::new(gallery::Menu::new(), on(Board::BADGER_2040));
+        let mut ui = Ui::new(gallery::Menu::new(), on(pimoroni::BADGER_2040));
         open(&mut ui, row);
         assert_eq!(ui.depth(), 2, "{row:?} did not open on a Badger 2040");
         assert!(
@@ -166,7 +168,7 @@ fn every_example_opens_on_the_smallest_panel() {
 #[test]
 fn scrolling_reveals_content_that_was_below_the_fold() {
     for row in ["Controls", "Lists", "Scrolling", "Text"] {
-        let mut ui = Ui::new(gallery::Menu::new(), on(Board::BADGER_2040));
+        let mut ui = Ui::new(gallery::Menu::new(), on(pimoroni::BADGER_2040));
         open(&mut ui, row);
 
         let before = ui.visible_text();
@@ -215,7 +217,7 @@ fn every_key_on_the_body_walks_the_list() {
         (Button::PageForward, Button::PageBack),
         (Button::Right, Button::Left),
     ] {
-        let mut ui = Ui::new(gallery::Menu::new(), on(Board::X3));
+        let mut ui = Ui::new(gallery::Menu::new(), on(xteink::X3));
 
         ui.press(down);
         assert!(
@@ -232,7 +234,7 @@ fn every_key_on_the_body_walks_the_list() {
 /// Confirm opens whatever is selected, wherever the selection got to.
 #[test]
 fn the_bottom_row_opens_what_it_selected() {
-    let mut ui = Ui::new(gallery::Menu::new(), on(Board::X3));
+    let mut ui = Ui::new(gallery::Menu::new(), on(xteink::X3));
 
     ui.press(Button::Right);
     ui.press(Button::Confirm);
@@ -302,7 +304,7 @@ fn percentages(ui: &Ui<Backend<Framebuffer>>) -> Vec<String> {
 /// suite already covered.
 #[test]
 fn the_warmth_row_can_be_reached_and_changed() {
-    let mut ui = Ui::new(gallery::Menu::new(), on(Board::X3));
+    let mut ui = Ui::new(gallery::Menu::new(), on(xteink::X3));
     open(&mut ui, "Controls");
 
     let before = percentages(&ui);
@@ -333,7 +335,7 @@ fn the_warmth_row_can_be_reached_and_changed() {
 /// `!has_left_right_keys()` branch never executes.
 #[test]
 fn a_value_row_is_reachable_on_a_board_with_no_pair() {
-    let mut ui = Ui::new(gallery::Menu::new(), on(Board::BADGER_2040));
+    let mut ui = Ui::new(gallery::Menu::new(), on(pimoroni::BADGER_2040));
     open(&mut ui, "Controls");
 
     // Read by label: this panel is 296x128 and scrolls, so which rows are on
@@ -396,7 +398,7 @@ fn a_value_row_is_reachable_on_a_board_with_no_pair() {
 /// nobody asked for and no undo for it.
 #[test]
 fn a_tap_on_a_controls_name_changes_nothing() {
-    let mut ui = Ui::new(gallery::Menu::new(), on(Board::X4));
+    let mut ui = Ui::new(gallery::Menu::new(), on(xteink::X4));
     open(&mut ui, "Controls");
 
     let before = value_of(&ui, "Warmth");
@@ -428,7 +430,7 @@ fn a_tap_on_a_controls_name_changes_nothing() {
 /// makes the runtime scroll upward to reach it.
 #[test]
 fn an_open_value_row_keeps_its_number_on_screen() {
-    let mut ui = Ui::new(gallery::Menu::new(), on(Board::BADGER_2040));
+    let mut ui = Ui::new(gallery::Menu::new(), on(pimoroni::BADGER_2040));
     open(&mut ui, "Controls");
 
     // Down past Warmth to the toggle, then back up to it.
@@ -457,7 +459,7 @@ fn an_open_value_row_keeps_its_number_on_screen() {
 /// person cannot be expected to discover that four keys changed meaning.
 #[test]
 fn confirm_does_not_silently_change_what_the_keys_mean() {
-    let mut ui = Ui::new(gallery::Menu::new(), on(Board::X3));
+    let mut ui = Ui::new(gallery::Menu::new(), on(xteink::X3));
     open(&mut ui, "Controls");
 
     let before = percentages(&ui);

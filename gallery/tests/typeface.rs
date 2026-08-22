@@ -12,13 +12,13 @@ use gallery::fonts::{CENTURY, COURIER, FAMILIES};
 use gallery::typeface::Typefaces;
 use xpui::host::{Canvas, FontRole, FontStyle, TextMetrics};
 use xpui::{App, Button, Screen};
+use xpui_boards_pimoroni as pimoroni;
 use xpui_eg::{
     Backend, Family, FontRenderer, Fonts, HELVETICA, Palette, Piece, Tier, clear_chosen_family,
     font_tier, u8g2,
 };
 use xpui_screenshot::{Framebuffer, assert_screenshot};
-use xpui_simulator::{Board, Control, Panel, Session};
-
+use xpui_simulator::{Control, Panel, Session};
 const WIDTH: i32 = 480;
 const HEIGHT: i32 = 800;
 
@@ -223,7 +223,7 @@ fn the_chosen_family_survives_moving_to_another_board() {
     let _guard = serial();
     // A cycle, because the point is moving between two backends. `new` opens
     // on one board and stays there.
-    let mut session = Session::cycling(Panel::of(Board::BADGER_2040), &Board::ALL);
+    let mut session = Session::cycling(Panel::of(pimoroni::BADGER_2040), &gallery::boards::ALL);
 
     let mut screen = Typefaces::new(FAMILIES);
     screen.update(1); // Courier
@@ -231,7 +231,7 @@ fn the_chosen_family_survives_moving_to_another_board() {
     assert_eq!(session.backend().fonts().family.name, "Courier");
 
     // Onto a board whose backend was built before any of this happened.
-    while session.board() == Board::BADGER_2040 {
+    while session.board() == pimoroni::BADGER_2040 {
         assert!(session.apply(Control::NextBoard), "the cycle moves on");
     }
     session.backend().begin_frame(2);
@@ -509,7 +509,7 @@ fn nothing_paints_wider_than_it_measured() {
 /// `family_helvetica.png` is the same frame as `menu_x4.png` today, so a
 /// change to the menu moves both. That is a coincidence of three defaults
 /// rather than a rule — Helvetica is what a backend opens in, this file
-/// installs 480x800, and `Board::X4.metrics` happens to be `Metrics::DEFAULT`.
+/// installs 480x800, and `xteink::X4.metrics` happens to be `Metrics::DEFAULT`.
 /// Nothing asserts it and nothing should: they are captures of different
 /// questions that currently have the same answer.
 ///

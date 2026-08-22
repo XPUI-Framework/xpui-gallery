@@ -14,11 +14,15 @@
 //! simulator still starts — hangs until something kills it.
 
 use gallery::Menu;
+use gallery::boards;
 use gallery::chord::Badge;
-use xpui_simulator::{Board, Panel, Simulator};
+use xpui_boards_xteink as xteink;
+use xpui_simulator::{Panel, Simulator};
 
 fn main() {
-    let mut board = Board::X4;
+    // The one it opens on when nothing is named. A real device rather than a
+    // placeholder, so what opens is something that exists.
+    let mut board = xteink::X4;
     let mut frames: Option<u32> = None;
 
     // Deliberately hand-parsed. Two optional flags do not justify a
@@ -30,15 +34,11 @@ fn main() {
                 Some(count) => frames = Some(count),
                 None => fail("--frames needs a number"),
             },
-            "--board" => match args.next().as_deref().and_then(Board::from_slug) {
+            "--board" => match args.next().as_deref().and_then(boards::from_slug) {
                 Some(chosen) => board = chosen,
                 None => fail(&format!(
                     "--board must be one of: {}",
-                    Board::ALL
-                        .iter()
-                        .map(|b| b.slug)
-                        .collect::<Vec<_>>()
-                        .join(", ")
+                    boards::slugs().collect::<Vec<_>>().join(", ")
                 )),
             },
             other => fail(&format!("unknown argument: {other}")),
@@ -53,7 +53,7 @@ fn main() {
         // The seven this example is built for. The simulator has no device
         // list of its own — it walks whatever it is handed, in this order —
         // so this is where the gallery says which panels it claims to fit.
-        .boards(&Board::ALL)
+        .boards(&boards::ALL)
         .title(format!("xpui — {}", board.name))
         .keys(Badge::default());
 

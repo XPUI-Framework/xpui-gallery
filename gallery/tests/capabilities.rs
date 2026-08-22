@@ -11,7 +11,6 @@
 
 use gallery::wire;
 use xpui::host::InputSource;
-use xpui_boards::Board;
 use xpui_eg::Palette;
 use xpui_screenshot::Framebuffer as TestDisplay;
 
@@ -21,7 +20,7 @@ fn display() -> TestDisplay {
 
 /// The wiring reports what the board carries, board by board.
 ///
-/// Walking `Board::ALL` rather than a chosen one: this is the per-board
+/// Walking `gallery::boards::ALL` rather than a chosen one: this is the per-board
 /// regression that is easiest to ship and hardest to see, because the suite is
 /// green and the board you looked at is right.
 ///
@@ -34,7 +33,7 @@ fn a_backend_wired_for_a_board_answers_for_that_board() {
     let mut with_pair = 0;
     let mut without = 0;
 
-    for board in Board::ALL {
+    for board in gallery::boards::ALL {
         let backend = wire(display(), board, Palette::INK_IS_ON);
         assert_eq!(
             backend.has_left_right_keys(),

@@ -6,10 +6,11 @@
 //! ```
 
 use tutorial::SleepTimer;
-use xpui_simulator::{Board, Panel, Simulator};
+use xpui_boards_xteink as xteink;
+use xpui_simulator::{Panel, Simulator};
 
 fn main() {
-    let mut simulator = Simulator::new(Panel::of(Board::X4)).title("xpui — tutorial");
+    let mut simulator = Simulator::new(Panel::of(xteink::X4)).title("xpui — tutorial");
 
     let mut args = std::env::args().skip(1);
     while let Some(arg) = args.next() {

@@ -10,7 +10,9 @@ use gallery::wire;
 use gallery::{DevelopersScreen, Menu, Units};
 use xpui::testing::Ui;
 use xpui::{Button, Screen};
-use xpui_boards::Board;
+use xpui_boards_core::Board;
+use xpui_boards_pimoroni as pimoroni;
+use xpui_boards_xteink as xteink;
 use xpui_eg::{Backend, Palette};
 use xpui_screenshot::Framebuffer;
 
@@ -130,7 +132,7 @@ fn back_closes_the_picker_before_the_screen() {
 
 #[test]
 fn it_opens_from_the_menu() {
-    let mut ui = Ui::new(Menu::new(), on(Board::X4));
+    let mut ui = Ui::new(Menu::new(), on(xteink::X4));
 
     ui.tap_text("Developers");
 
@@ -146,7 +148,7 @@ fn it_opens_from_the_menu() {
 /// figure — the reason the rows share one scale.
 #[test]
 fn choosing_a_scale_rewrites_every_figure() {
-    let mut ui = Ui::new(DevelopersScreen::new(), on(Board::X4));
+    let mut ui = Ui::new(DevelopersScreen::new(), on(xteink::X4));
 
     let before = ui.visible_text();
     assert!(
@@ -173,7 +175,7 @@ fn choosing_a_scale_rewrites_every_figure() {
 /// where nothing fits.
 #[test]
 fn every_section_is_reachable_on_the_smallest_panel() {
-    let mut ui = Ui::new(DevelopersScreen::new(), on(Board::BADGER_2040));
+    let mut ui = Ui::new(DevelopersScreen::new(), on(pimoroni::BADGER_2040));
 
     let mut seen = ui.visible_text();
     for _ in 0..60 {

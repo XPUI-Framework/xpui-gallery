@@ -21,6 +21,9 @@ path = "src/main.rs"
 [dependencies]
 xpui.workspace = true
 xpui-simulator.workspace = true
+# The board the window opens on. One vendor's crate, because there is no
+# "every board" crate any more — a project takes the devices it targets.
+xpui-boards-xteink.workspace = true
 
 [dev-dependencies]
 xpui = { workspace = true, features = ["testing"] }

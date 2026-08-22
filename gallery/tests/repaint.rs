@@ -11,7 +11,7 @@
 use gallery::Menu;
 use gallery::wire;
 use xpui::{App, Button};
-use xpui_boards::Board;
+use xpui_boards_xteink as xteink;
 use xpui_eg::{Backend, Palette};
 use xpui_screenshot::Framebuffer;
 
@@ -24,7 +24,7 @@ fn pixels(backend: &'static Backend<Framebuffer>) -> Vec<bool> {
 
 #[test]
 fn pressing_down_changes_the_panel() {
-    let board = Board::X4;
+    let board = xteink::X4;
     let backend = wire(
         Framebuffer::new(board.width, board.height),
         board,

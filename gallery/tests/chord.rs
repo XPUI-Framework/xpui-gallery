@@ -6,6 +6,8 @@ use gallery::Menu;
 use gallery::chord::{Badge, Chord, DOUBLE_PRESS_MS, Doubles, back_stands_on};
 use xpui::host::{KeyRow, RowKey};
 use xpui::{App, Button};
+use xpui_boards_pimoroni as pimoroni;
+use xpui_boards_xteink as xteink;
 use xpui_simulator::{Board, Keypad, Panel, Session, open_frame};
 
 /// `Session::new` installs the process-wide host, so one test at a time.
@@ -62,12 +64,12 @@ const HAS_BACK_KEY: KeyRow = KeyRow::new(&[
 /// A three-key badge: a, b and c along the bottom and nothing down the edges,
 /// so there is no key to spare for Back and it is borrowed from the first.
 ///
-/// Nothing in `Board::ALL` is arranged this way any more — the Badger and the
+/// Nothing in `gallery::boards::ALL` is arranged this way any more — the Badger and the
 /// Tufty both have an up/down pair and give their first key to Back. The
 /// arrangement is still what this module exists for, so the tests name it
 /// outright rather than borrowing a board that has since grown out of it.
 fn three_key_badge() -> Board {
-    let mut board = Board::BADGER_2040;
+    let mut board = pimoroni::BADGER_2040;
     board.keys = KeyRow::new(&[RowKey::Confirm, RowKey::Previous, RowKey::Next]);
     board
 }
@@ -148,7 +150,7 @@ fn only_the_borrowed_key_doubles() {
 #[test]
 fn a_board_with_a_back_key_never_borrows_one() {
     let mut doubles = Doubles::default();
-    let back = back_stands_on(Board::X3.keys);
+    let back = back_stands_on(xteink::X3.keys);
 
     assert_eq!(
         doubles.press(Button::Confirm, 0, back),
@@ -244,7 +246,7 @@ fn the_other_keys_are_not_delayed() {
 #[test]
 fn a_four_key_board_confirms_at_once() {
     let mut badge = Badge::default();
-    let back = back_stands_on(Board::X4.keys);
+    let back = back_stands_on(xteink::X4.keys);
 
     assert_eq!(
         badge.pressed(Button::Confirm, 0, back),
@@ -442,7 +444,7 @@ fn on_a_badge_two_presses_go_back() {
 #[test]
 fn on_a_reader_the_select_is_immediate() {
     let _guard = serial();
-    let session = Session::new(Panel::of(Board::X4));
+    let session = Session::new(Panel::of(xteink::X4));
     let mut keypad = Keypad::new(Box::new(Badge::default()));
     let mut app = App::new(Menu::new());
     app.render();

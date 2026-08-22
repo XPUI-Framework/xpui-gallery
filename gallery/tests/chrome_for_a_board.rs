@@ -15,7 +15,7 @@
 use std::sync::{Mutex, MutexGuard};
 
 use gallery::{metrics_for, wire};
-use xpui_boards::Board;
+use xpui_boards_core::Board;
 use xpui_eg::Palette;
 use xpui_screenshot::Framebuffer as TestDisplay;
 use xpui_simulator::{Panel, Session};
@@ -42,7 +42,7 @@ fn display() -> TestDisplay {
 /// now, so there is one test.
 #[test]
 fn every_board_holds_at_least_three_list_rows() {
-    for board in Board::ALL {
+    for board in gallery::boards::ALL {
         let rows = metrics_for(board).list_rows_for(board.height);
         assert!(
             rows >= 3,
@@ -68,7 +68,7 @@ fn every_board_holds_at_least_three_list_rows() {
 /// that panel and paint an otherwise correct screen.
 #[test]
 fn only_a_board_with_keys_reserves_a_hint_band() {
-    for board in Board::ALL {
+    for board in gallery::boards::ALL {
         if board.touch {
             assert_eq!(
                 metrics_for(board).button_hints_height,
@@ -90,7 +90,7 @@ fn only_a_board_with_keys_reserves_a_hint_band() {
 ///
 /// `Board::custom` is the escape hatch for a panel nobody here has described,
 /// and it is the one board [`metrics_for`] can be handed that is not in
-/// `Board::ALL` — so the loop above never reaches it. Before the chrome was
+/// `gallery::boards::ALL` — so the loop above never reaches it. Before the chrome was
 /// injected a custom board stored `Metrics::for_panel` unconditionally, hint
 /// band and all, because `Board::custom` never called `without_button_hints`.
 /// Deriving it fixed that, and this is what says so.
@@ -117,7 +117,7 @@ fn a_custom_touch_board_gets_no_hint_band_either() {
 fn the_simulator_wires_what_the_application_wires() {
     let _guard = serial();
 
-    for board in Board::ALL {
+    for board in gallery::boards::ALL {
         let session = Session::new(Panel::of(board));
         let theirs = session.backend();
         let mine = wire(display(), board, Palette::INK_IS_ON);

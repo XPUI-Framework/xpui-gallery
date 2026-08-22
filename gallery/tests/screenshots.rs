@@ -19,7 +19,7 @@
 //! | `Metrics::SMALL.list_row_height` | 7 captures | the Badger |
 //! | `Metrics::SMALL.header_height` | 10 captures | the Badger |
 //!
-//! `Metrics::SMALL` is the preset no other board in `Board::ALL` uses. Moving
+//! `Metrics::SMALL` is the preset no other board in `gallery::boards::ALL` uses. Moving
 //! its `list_row_height` was **green across the whole repository** until this
 //! file captured more than the menu: the menu's rows carry subtitles, so they
 //! are laid out from `list_row_height_with_subtitle`, and the single Badger
@@ -63,7 +63,7 @@ use gallery::{DevelopersScreen, Menu};
 use gallery::{metrics_for, wire};
 use xpui::host::RowField;
 use xpui::{App, Button, Rect};
-use xpui_boards::Board;
+use xpui_boards_core::Board;
 use xpui_eg::{Backend, Palette};
 use xpui_screenshot::{Framebuffer, check_screenshot};
 
@@ -132,7 +132,7 @@ fn on_every_board(screen: &str, header: Header, paint: Paint) {
     let _guard = serial();
     let mut failed: Vec<(Board, String)> = Vec::new();
 
-    for board in Board::ALL {
+    for board in gallery::boards::ALL {
         let backend = install(board);
         let outcome = paint(backend, board)
             .and_then(|()| chrome_fits(backend, board, header))
@@ -168,7 +168,7 @@ fn report(what: &str, failed: &[(Board, String)]) {
     panic!(
         "{what} fails on {} of {} boards: {}\n\n{}",
         failed.len(),
-        Board::ALL.len(),
+        gallery::boards::ALL.len(),
         boards.join(", "),
         detail.join("\n\n"),
     );
@@ -499,7 +499,7 @@ fn opening_an_example_from_the_menu_on_every_board() {
     let _guard = serial();
     let mut failed: Vec<(Board, String)> = Vec::new();
 
-    for board in Board::ALL {
+    for board in gallery::boards::ALL {
         let direct = install(board);
         App::new(Controls::new()).render();
         let expected = direct.with_display(|frame| frame.ink().to_vec());
