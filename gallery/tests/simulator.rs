@@ -93,3 +93,31 @@ fn an_unknown_argument_is_refused() {
         "it said why"
     );
 }
+
+/// The gallery offers all seven boards to the `B` key.
+///
+/// The simulator has no device list of its own — `examples/gallery/src/main.rs`
+/// passes one — so a deleted `.boards(..)` line ships a window whose `B` key
+/// does nothing, on every board, with no test red anywhere. Nothing else here
+/// reaches that line: the two tests above assert an exit code, and the
+/// simulator's own tests build a `Session` directly and never touch this
+/// binary.
+///
+/// Asserted against the startup line rather than by pressing `B`, because SDL
+/// gives no way to inject an event into a running window.
+#[test]
+fn the_gallery_offers_every_board_to_the_board_key() {
+    let (code, output) = run_headless(1);
+    assert_eq!(code, Some(0), "exited with {code:?}:\n{output}");
+
+    let cycle = output
+        .lines()
+        .find_map(|line| line.split_once("cycle "))
+        .map(|(_, rest)| rest.trim().to_string())
+        .unwrap_or_else(|| panic!("the gallery said nothing about its cycle:\n{output}"));
+
+    // Named rather than counted: a cycle of the right length holding the wrong
+    // boards is the fault this is for.
+    let want = "x3 x4 x4pro sticky badger2040 tufty2040 inkyframe";
+    assert_eq!(cycle, want, "the gallery walks a list it does not claim to");
+}

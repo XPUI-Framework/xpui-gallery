@@ -221,7 +221,9 @@ fn a_swap_re_derives_the_sizes_from_the_chrome() {
 #[test]
 fn the_chosen_family_survives_moving_to_another_board() {
     let _guard = serial();
-    let mut session = Session::new(Panel::of(Board::BADGER_2040));
+    // A cycle, because the point is moving between two backends. `new` opens
+    // on one board and stays there.
+    let mut session = Session::cycling(Panel::of(Board::BADGER_2040), &Board::ALL);
 
     let mut screen = Typefaces::new(FAMILIES);
     screen.update(1); // Courier

@@ -49,9 +49,32 @@ fn main() {
     // of its own, so this passes them all straight through; it earns its keep
     // on a board with three keys and no spare, which folds Back into a double
     // press. See `gallery::chord`.
-    let mut simulator = Simulator::new(Panel::of(board))
+    let simulator = Simulator::new(Panel::of(board))
+        // The seven this example is built for. The simulator has no device
+        // list of its own — it walks whatever it is handed, in this order —
+        // so this is where the gallery says which panels it claims to fit.
+        .boards(&Board::ALL)
         .title(format!("xpui — {}", board.name))
         .keys(Badge::default());
+
+    // Said at startup, the way the RP2040 firmware says which board it booted
+    // on: a window that opens on the wrong panel, or a `B` key that walks a
+    // list nobody meant, is otherwise a thing you notice by pressing it.
+    println!(
+        "xpui: {} {}x{}, cycle {}",
+        board.name,
+        board.width,
+        board.height,
+        simulator
+            .session()
+            .boards()
+            .iter()
+            .map(|b| b.slug)
+            .collect::<Vec<_>>()
+            .join(" ")
+    );
+
+    let mut simulator = simulator;
     if let Some(count) = frames {
         simulator = simulator.frames(count);
     }
