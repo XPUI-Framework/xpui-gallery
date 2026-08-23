@@ -1,6 +1,6 @@
 //! The tutorial's screen, driven the way the tutorial says it behaves.
 //!
-//! If a claim in `crates/xpui/docs/tutorial.md` is not true of this crate, one
+//! If a claim in the framework's `docs/tutorial.md` is not true of this crate, one
 //! of these fails. That is the whole arrangement: the prose is proven by its
 //! snippets compiling, and the *result* is proven here.
 //!

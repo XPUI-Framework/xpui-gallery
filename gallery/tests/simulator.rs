@@ -96,7 +96,7 @@ fn an_unknown_argument_is_refused() {
 
 /// The gallery offers all seven boards to the `B` key.
 ///
-/// The simulator has no device list of its own — `examples/gallery/src/main.rs`
+/// The simulator has no device list of its own — `gallery/src/main.rs`
 /// passes one — so a deleted `.boards(..)` line ships a window whose `B` key
 /// does nothing, on every board, with no test red anywhere. Nothing else here
 /// reaches that line: the two tests above assert an exit code, and the

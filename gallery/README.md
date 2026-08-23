@@ -87,7 +87,7 @@ framebuffer, once per board, and compares each one against a PNG committed in
 ```bash
 cargo test -p xpui-gallery
 UPDATE_SNAPSHOTS=1 cargo test -p xpui-gallery   # accept intended changes
-open examples/gallery/tests/screenshots/        # then look at them
+open gallery/tests/screenshots/        # then look at them
 open target/diff/                               # after a failure
 ```
 
