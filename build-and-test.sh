@@ -43,6 +43,7 @@ LINT_TARGET_CRATES=(-p xpui-gallery --lib)
 
 gates() {
   file_sizes
+  crates_are_tested
   every_check_runs
   readmes_warn
   prose_is_compiled
