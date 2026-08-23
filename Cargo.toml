@@ -1,0 +1,38 @@
+# The reference application, and the conformance suite it doubles as.
+#
+# `gallery` is both: the screens the simulator opens and both firmwares flash,
+# and the seven-board suite that proves them — every screen on every panel,
+# against a committed PNG. `tutorial` is the screen `crates/xpui`'s tutorial
+# walks to, in a window, so the prose and the runnable thing stay side by side.
+[workspace]
+members = ["gallery", "tutorial"]
+resolver = "3"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+authors = ["Thiago Holanda <unnamedd@gmail.com>"]
+repository = "https://github.com/XPUI-Framework/xpui-gallery"
+
+[workspace.dependencies]
+# Git dependencies, not versions: nothing is published, and a fresh clone of
+# this repository has to build without its siblings on disk.
+xpui = { git = "https://github.com/XPUI-Framework/xpui-framework", branch = "main" }
+xpui-chrome = { git = "https://github.com/XPUI-Framework/xpui-chrome", branch = "main" }
+xpui-boards-core = { git = "https://github.com/XPUI-Framework/xpui-boards", branch = "main" }
+xpui-boards-pimoroni = { git = "https://github.com/XPUI-Framework/xpui-boards", branch = "main" }
+xpui-boards-seeed = { git = "https://github.com/XPUI-Framework/xpui-boards", branch = "main" }
+xpui-boards-xteink = { git = "https://github.com/XPUI-Framework/xpui-boards", branch = "main" }
+xpui-embedded-graphics = { git = "https://github.com/XPUI-Framework/xpui-backends", branch = "main" }
+xpui-screenshot = { git = "https://github.com/XPUI-Framework/xpui-backends", branch = "main", default-features = false }
+xpui-simulator = { git = "https://github.com/XPUI-Framework/xpui-simulator", branch = "main" }
+
+xpui-gallery = { path = "gallery" }
+
+# Shared across every repository so host, RISC-V and Xtensa builds agree.
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
