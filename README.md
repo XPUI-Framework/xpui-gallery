@@ -59,6 +59,10 @@ UPDATE_SNAPSHOTS=1 cargo test    # accept intended changes — then READ the dif
 open target/screenshots/         # and look at what was rendered
 ```
 
+The checks themselves are in [`xtask/`](xtask/) — this repository's own list,
+in Rust, holding nothing it does not run. `./build-and-test.sh fix` formats
+in place first.
+
 A first run of a new golden writes it **and fails**, so nobody commits a
 picture they never looked at.
 
