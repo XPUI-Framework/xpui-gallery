@@ -1,21 +1,15 @@
 //! The screen the tutorial builds, finished.
 //!
-//! [`crates/xpui/docs/tutorial.md`](../../crates/xpui/docs/tutorial.md) walks
+//! [`crates/xpui/docs/tutorial.md`](../../../crates/xpui/docs/tutorial.md) walks
 //! from an empty file to this, one step at a time. Every snippet there is a
-//! doctest; this crate is the end state, compiled and screenshot-tested like
-//! any other. Reading them side by side is the point — the prose explains why,
-//! and this is what it adds up to.
-
-/// The tutorial itself, compiled.
-///
-/// The markdown lives with the framework, where a reader will look for it, but
-/// it is proven from here: some of its snippets open a window, and `xpui`
-/// cannot depend on the simulator — the dependency only ever points inward.
-/// So this crate, which depends on both, is what turns those snippets into
-/// tests.
-#[cfg(doctest)]
-#[doc = include_str!("../../../crates/xpui/docs/tutorial.md")]
-mod guide {}
+//! doctest but one — proven by `xpui` itself, which needs no backend to run a
+//! screen. The exception is the block that opens a window: `xpui` cannot see a
+//! simulator, so those three calls are checked against this crate's `main`
+//! instead, which the gate compiles.
+//!
+//! This crate is the end state: the finished screen, screenshot-tested like
+//! any other, with a `main` that opens it in a window. Reading the two side by
+//! side is the point — the prose explains why, and this is what it adds up to.
 
 use xpui::screen::Screen;
 use xpui::{
