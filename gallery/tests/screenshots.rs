@@ -305,7 +305,7 @@ fn the_menu_on_every_board() {
     });
 }
 
-/// The screen [`30`](../../../docs/specs/done/30-editing-a-value-with-one-key.md)
+/// The screen [`30`](https://github.com/XPUI-Framework/xpui-framework/blob/main/docs/specs/done/30-editing-a-value-with-one-key.md)
 /// rebuilds: a slider, a stepper, a toggle and a progress bar.
 #[test]
 fn the_controls_example_on_every_board() {
@@ -317,7 +317,7 @@ fn the_controls_example_on_every_board() {
 
 /// The same screen with a value **open**, on every board.
 ///
-/// [`34`](../../../docs/specs/done/34-a-mode-you-can-see.md)'s third state, and the
+/// [`34`](https://github.com/XPUI-Framework/xpui-framework/blob/main/docs/specs/done/34-a-mode-you-can-see.md)'s third state, and the
 /// only capture of it. Without this the suite holds `Idle` and `Focused` on
 /// seven panels and `Editing` on none — a state that draws correctly on one
 /// panel and not another is exactly what this file exists to notice, and the

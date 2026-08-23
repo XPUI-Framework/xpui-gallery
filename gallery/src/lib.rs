@@ -10,7 +10,7 @@
 //! without dragging a window in.
 //!
 //! `no_std` on a device, `std` on a desktop: these exact screens are what the
-//! RP2040 binaries in [`examples/rp2040`](../../rp2040/) flash to a Badger
+//! RP2040 binaries in [`examples/rp2040`](https://github.com/XPUI-Framework/xpui-rp2040/tree/main) flash to a Badger
 //! 2040 and a Tufty 2040. One source, two targets, differing only in a
 //! [`Board`] and an entry point.
 

@@ -3,7 +3,7 @@
 > ⚠️ **Under heavy development.** Not production-ready. The API can break
 > without notice. Use at your own risk.
 
-Example screens built on [`xpui`](../../crates/xpui/), in a window.
+Example screens built on [`xpui`](https://github.com/XPUI-Framework/xpui-framework/tree/main/crates/xpui), in a window.
 
 ```bash
 cargo run -p xpui-gallery
@@ -59,7 +59,7 @@ The board-by-board captures are what catch a fault only one panel has. Moving
 `Tokens::SMALL.list_row_height` by one pixel moves six of them and fails no
 other test in the repository; the module doc of that file counts two more
 mutations and says which boards each reaches. Goldens are compared by
-[`xpui-embedded-graphics`](../../crates/backend/embedded_graphics/), pixel for
+[`xpui-embedded-graphics`](https://github.com/XPUI-Framework/xpui-backends/tree/main/embedded_graphics), pixel for
 pixel with no tolerance.
 
 ## What is in it
