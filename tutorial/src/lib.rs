@@ -1,6 +1,6 @@
 //! The screen the tutorial builds, finished.
 //!
-//! [`crates/xpui/docs/tutorial.md`](https://github.com/XPUI-Framework/xpui-framework/blob/main/crates/xpui/docs/tutorial.md) walks
+//! [`docs/tutorial.md`](https://github.com/XPUI-Framework/xpui-framework/blob/main/docs/tutorial.md) walks
 //! from an empty file to this, one step at a time. Every snippet there is a
 //! doctest but one — proven by `xpui` itself, which needs no backend to run a
 //! screen. The exception is the block that opens a window: `xpui` cannot see a

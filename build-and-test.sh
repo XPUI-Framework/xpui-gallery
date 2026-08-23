@@ -22,9 +22,22 @@ SOURCE_ROOTS=(gallery tutorial)
 # The gallery's tests install the fake host to assert what was painted.
 TEST_FEATURES="xpui/testing"
 
-# Host only. Both firmwares depend on this crate and each builds it for its own
-# device; nothing here is device code, so there is no bare-metal run.
+# **There is device code here**, and it is linted for both bare-metal targets
+# because nothing else does. `gallery/src/lib.rs` is
+# `cfg_attr(target_os = "none", no_std)` and the simulator dependency is gated
+# on `cfg(not(target_os = "none"))`, so the configuration both firmwares
+# actually link is a different compilation from the host one. Before this line
+# it was reached only by `./build-and-test.sh all` in the two firmware
+# repositories, against `branch = "main"` from git rather than the local tree —
+# so a `no_std` break here was invisible until somebody built a firmware.
+#
+# `tutorial` is host-only and named out: it exists to snapshot the screen the
+# framework's tutorial builds, which needs a window.
 HOST_WORKSPACE=1
+LINT_TARGETS=("riscv32imc-unknown-none-elf" "thumbv6m-none-eabi?")
+# `--lib` because the binary is the simulator entry point and needs `std`;
+# what a firmware links is the library, and that is what has to compile here.
+LINT_TARGET_CRATES=(-p xpui-gallery --lib)
 
 . bin/gate-common.sh
 
@@ -43,14 +56,12 @@ gates() {
 
 case "${1:-check}" in
   check)
-    rust_format_check
-    cpp_format_check
+    run_all "${FORMAT_CHECK[@]}"
     gates
     printf '\nChecks passed.\n'
     ;;
   fix)
-    rust_format_fix
-    cpp_format_fix
+    run_all "${FORMAT_FIX[@]}"
     gates
     printf '\nFormatted and checked.\n'
     ;;

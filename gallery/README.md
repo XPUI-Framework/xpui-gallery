@@ -3,7 +3,7 @@
 > ⚠️ **Under heavy development.** Not production-ready. The API can break
 > without notice. Use at your own risk.
 
-Example screens built on [`xpui`](https://github.com/XPUI-Framework/xpui-framework/tree/main/crates/xpui), in a window.
+Example screens built on [`xpui`](https://github.com/XPUI-Framework/xpui-framework), in a window.
 
 ```bash
 cargo run -p xpui-gallery
