@@ -6,6 +6,7 @@ edition.workspace = true
 license.workspace = true
 authors.workspace = true
 repository.workspace = true
+readme = "README.md"
 publish = false
 
 # A library as well as a binary: the screens are what the tests exercise, and
