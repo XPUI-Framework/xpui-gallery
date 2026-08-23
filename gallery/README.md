@@ -1,5 +1,8 @@
 # The gallery
 
+> ⚠️ **Under heavy development.** Not production-ready. The API can break
+> without notice. Use at your own risk.
+
 Example screens built on [`xpui`](../../crates/xpui/), in a window.
 
 ```bash
