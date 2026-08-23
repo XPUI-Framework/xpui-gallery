@@ -61,3 +61,7 @@ open target/screenshots/         # and look at what was rendered
 
 A first run of a new golden writes it **and fails**, so nobody commits a
 picture they never looked at.
+
+## License
+
+MIT — see [LICENSE](LICENSE). Copyright (c) 2026 Thiago Holanda.
