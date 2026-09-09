@@ -10,8 +10,8 @@
 //! without dragging a window in.
 //!
 //! `no_std` on a device, `std` on a desktop: these exact screens are what the
-//! RP2040 binaries in [`examples/rp2040`](https://github.com/XPUI-Framework/xpui-rp2040/tree/main) flash to a Badger
-//! 2040 and a Tufty 2040. One source, two targets, differing only in a
+//! RP2040 binaries in [`xpui-rp2040`](https://github.com/XPUI-Framework/xpui-rp2040/tree/main) flash to a
+//! Badger 2040 and a Tufty 2040. One source, two targets, differing only in a
 //! [`Board`] and an entry point.
 
 #![cfg_attr(target_os = "none", no_std)]
@@ -45,8 +45,8 @@ pub use units::Units;
 /// `tests/physical.rs` measures through it, so a screenshot and a millimetre
 /// figure cannot disagree about what was on the glass.
 ///
-/// `!board.touch` is the hint band: a board driven by a finger has no keys to
-/// label, so the band would be a strip of words naming keys nobody has.
+/// `!board.touch` is the hint band: a touch board gets none, the X4 Pro and
+/// the Sticky included, though both carry a key row too.
 pub fn metrics_for(board: Board) -> Metrics {
     Metrics::for_device(
         board.width,
@@ -58,11 +58,10 @@ pub fn metrics_for(board: Board) -> Metrics {
 
 /// A backend wired for a board, as a firmware would wire one.
 ///
-/// The framework does not know what a board is any more: `Metrics` comes from
-/// the panel's size and scale, `Labels` from its size, `KeyRow` and the
-/// Left/Right pair from the hardware. Composing those is the application's
-/// job, and this is the application — so this is what a firmware's frame loop
-/// looks like, and what the conformance suite drives.
+/// The framework knows no boards: `Metrics` comes from the panel's size and
+/// scale, `Labels` from its size, `KeyRow` and the Left/Right pair from the
+/// hardware. Composing those is the application's job, so this is what a
+/// firmware's frame loop looks like, and what the conformance suite drives.
 pub fn wire<D>(display: D, board: Board, palette: Palette<D::Color>) -> Backend<D>
 where
     D: DrawTarget,

@@ -5,9 +5,8 @@
 //! cargo run -p xpui-gallery -- --frames 60     # stop after 60 frames
 //! ```
 //!
-//! Arrows move focus, Enter opens, Backspace goes back, H is the home gesture,
-//! Q or Escape quits. Clicking is a tap and the scroll wheel is a swipe, so the
-//! touch paths work too.
+//! The keys are the simulator's — `B` among them, which walks the board list
+//! this file hands it.
 //!
 //! `--frames` exists so the loop can be *tested*. Without it the only way out
 //! is a person closing the window, which means CI — and any check that the
@@ -45,16 +44,16 @@ fn main() {
         }
     }
 
-    // The firmware's own reading of its keys. Every board here has a Back key
-    // of its own, so this passes them all straight through; it earns its keep
-    // on a board with three keys and no spare, which folds Back into a double
-    // press. See `gallery::chord`.
     let simulator = Simulator::new(Panel::of(board))
         // The seven this example is built for. The simulator has no device
         // list of its own — it walks whatever it is handed, in this order —
         // so this is where the gallery says which panels it claims to fit.
         .boards(&boards::ALL)
         .title(format!("xpui — {}", board.name))
+        // The firmware's own reading of its keys. Every board here has a Back
+        // key of its own, so this passes them all straight through; it earns
+        // its keep on a board with three keys and no spare, which folds Back
+        // into a double press. See `gallery::chord`.
         .keys(Badge::default());
 
     // Said at startup, the way the RP2040 firmware says which board it booted

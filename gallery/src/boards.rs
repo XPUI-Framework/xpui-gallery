@@ -28,12 +28,9 @@ pub const ALL: [Board; 7] = [
 
 /// Every vendor's boards are here, and nothing else is.
 ///
-/// The one thing the carve made possible to get wrong: `ALL` is written out by
-/// hand, so a vendor could gain a board and this list not notice. Before,
-/// there was one array and it could not disagree with itself.
-///
-/// A `const` assertion rather than a test, because it costs nothing and fires
-/// at compile time — a board added to a vendor crate stops this building until
+/// `ALL` is written out by hand, so a vendor could gain a board and this list
+/// not notice. A `const` assertion rather than a test because it fires at
+/// compile time: a board added to a vendor crate stops this building until
 /// somebody decides whether the gallery ships it.
 const _: () = assert!(
     ALL.len()

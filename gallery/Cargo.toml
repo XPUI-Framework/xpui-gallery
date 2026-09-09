@@ -9,6 +9,9 @@ repository.workspace = true
 readme = "README.md"
 publish = false
 
+[lints]
+workspace = true
+
 # A library as well as a binary: the screens are what the tests exercise, and
 # a test cannot open a window.
 [lib]
@@ -23,6 +26,7 @@ path = "src/main.rs"
 xpui.workspace = true
 # The boards these screens are laid out for. Named directly rather than reached
 # through the simulator, because a device build has no simulator.
+
 # All three vendors, because this is the application that claims to fit seven
 # panels. A firmware takes the one vendor it flashes.
 xpui-boards-core.workspace = true

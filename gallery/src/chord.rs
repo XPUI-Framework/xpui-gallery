@@ -1,38 +1,17 @@
 //! Two presses of one key, meaning something a second key would have meant.
 //!
 //! A board with three keys along its bottom edge and no spare has nowhere to
-//! put Back. Pressing the first key twice in quick succession stands in for it
-//! — the same trick a mouse plays with its one button.
+//! put Back, so pressing the first key twice in quick succession stands in
+//! for it. **No board in `crate::boards::ALL` is arranged this way**, but the
+//! shape is real, so it is kept.
 //!
-//! **No board in `crate::boards::ALL` is arranged this way.** The Badger and the Tufty
-//! each have three keys *and* an up/down pair, so they spend the first on Back
-//! and never enter this. It is kept because that shape is real, and because
-//! reading two presses as one meaning is the firmware's job wherever it
-//! happens.
-//!
+//! It lives in the example, not the simulator: hardware sends raw presses,
+//! and what two of them close together *mean* is the firmware's decision.
 //! Driven by `(key, timestamp)` so it can be tested without a window.
 //!
-//! This lives in the example, not the simulator. A simulator stands in for the
-//! hardware, and hardware sends raw presses — what two of them close together
-//! *mean* is the firmware's decision, and here the example is the firmware.
-//!
-//! # What it costs
-//!
-//! A key that might yet turn out to be half of a double press cannot act
-//! until it is certain it was not, so **every select on a three-key board waits
-//! out [`DOUBLE_PRESS_MS`]**. That is the price of the arrangement, and it is
-//! not free:
-//!
-//! On a panel that takes most of a second to refresh the wait is lost in it; on
-//! an immediate LCD it is a third of a second of nothing.
-//!
-//! Only the stand-in key pays it. Every other key on the row acts on the
-//! frame it was pressed, and a board with four keys has a Back of its own and
-//! never enters this at all.
-//!
-//! Before choosing this for a board, check whether it has a key to spare. A
-//! delay on the one action a person takes most often is a poor trade for a
-//! button that was already there.
+//! The cost: a select on the stand-in key cannot act until it is certain it
+//! was not half of a double, so it waits out [`DOUBLE_PRESS_MS`] — lost in an
+//! e-ink refresh, a third of a second of nothing on an LCD.
 
 use xpui::Button;
 use xpui::host::{KeyRow, RowKey};
@@ -40,9 +19,9 @@ use xpui::host::{KeyRow, RowKey};
 /// How long a second press has to arrive to count as part of the first.
 ///
 /// Long enough not to need a deliberate double-tap, short enough that two
-/// separate confirmations are not read as one Back. The firmware uses four
-/// hundred milliseconds to separate a click from a hold, and this sits under
-/// that so the two do not fight.
+/// separate confirmations are not read as one Back. CrossPoint's firmware
+/// separates a click from a hold at four hundred milliseconds, and this sits
+/// under that so the two do not fight.
 pub const DOUBLE_PRESS_MS: u32 = 350;
 
 /// What a press turned out to mean.
@@ -99,12 +78,8 @@ impl Doubles {
 
 /// The key that carries Back on a board whose bottom row has no Back key.
 ///
-/// Asked of the row itself rather than of how long it is. Those were the same
-/// question while every three-key row spent its keys on Confirm, Previous and
-/// Next — but a board with three keys along the bottom *and* an up/down pair
-/// elsewhere has one to spare, gives it to Back, and needs no stand-in at all.
-/// Counting keys would still charge it the double-press delay for a key it
-/// has.
+/// Asked of the row rather than of its length: a board with three keys along
+/// the bottom *and* an up/down pair gives one to Back and needs no stand-in.
 pub fn back_stands_on(row: KeyRow) -> Option<Button> {
     // An empty row is a board with no keys along the bottom at all: Back comes
     // from its touchscreen, and there is no key here to borrow. "Has no Back
@@ -116,15 +91,11 @@ pub fn back_stands_on(row: KeyRow) -> Option<Button> {
 /// The whole arrangement: recognise the double press, and hold the select back
 /// far enough to know there was not one.
 ///
-/// [`Doubles`] can only answer once both presses have arrived. That is too
-/// late on its own — by then the first press has already opened something, and
-/// going back from it is not the same as never having gone. So the stand-in
-/// key is **swallowed on the way down** and re-issued when its window closes
-/// with no second press behind it. See the module docs for what that costs.
-///
-/// Portable on purpose. The simulator is where it is exercised, but the board
-/// it is for is a real one, and its firmware has the same three keys and the
-/// same missing fourth.
+/// [`Doubles`] can only answer once both presses have arrived, by which time
+/// the first has already opened something. So the stand-in key is **swallowed
+/// on the way down** and re-issued when its window closes with no second
+/// press behind it. Portable on purpose: the board it is for is real, and its
+/// firmware has the same three keys.
 #[derive(Copy, Clone, Debug, Default)]
 pub struct Badge {
     doubles: Doubles,
@@ -132,12 +103,9 @@ pub struct Badge {
     pending: Option<(Button, u32)>,
     /// A press whose window shut before anybody asked for it.
     ///
-    /// The loop asks for anything due at the top of each frame, so this is
-    /// normally empty. It exists because "normally" is not a guarantee a state
-    /// machine should rest on: a caller that offers two presses without asking
-    /// between them would otherwise have the first silently overwritten, and a
-    /// press that a person made and the device dropped is the worst outcome
-    /// available here.
+    /// The loop asks at the top of each frame, so this is normally empty; it
+    /// exists so a caller that offers two presses without asking between them
+    /// does not have the first silently overwritten.
     ripe: Option<Button>,
 }
 

@@ -1,12 +1,10 @@
 //! Diagnostics that are not user features.
 //!
-//! Ported from the firmware this framework was built inside, where it showed
-//! live heap figures. There is no firmware here, so the numbers come from a
-//! stand-in that moves between readings.
-//!
-//! It doubles as the framework's proving ground: the sections below exercise
-//! the list, the dialog, the slider and focus navigation on one screen, so a
-//! change to any of them can be seen on a device rather than argued about.
+//! The heap figures come from a stand-in that moves between readings, since
+//! there is no firmware here. It doubles as the framework's proving ground:
+//! the sections below exercise the list, the dialog, the slider and focus
+//! navigation on one screen, so a change to any of them can be seen on a
+//! device rather than argued about.
 
 use alloc::string::String;
 use alloc::vec::Vec;
@@ -19,11 +17,10 @@ use xpui::{
 use crate::heap::Heap;
 use crate::units::Units;
 
-/// Labels for the scale picker and the sections below.
-///
-/// Plain constants rather than translated keys: a firmware would reach these
-/// through its own i18n, and standing one up for a single example would be
-/// more machinery than the example.
+// Labels for the scale picker and the sections below. Plain constants rather
+// than translated keys: a firmware would reach these through its own i18n,
+// and standing one up for a single example would be more machinery than the
+// example.
 const UNIT_LABELS: [&str; 2] = ["Bytes", "Kilobytes"];
 const SCREEN_TITLE: &str = "Developers";
 const MEMORY_TITLE: &str = "Memory";
@@ -35,9 +32,9 @@ const MIN_FREE_HEAP: &str = "Least ever free";
 const BENCH_TITLE: &str = "Widget bench";
 const SCROLL_TITLE: &str = "Scrolling";
 
-/// Rows in the scrolling section. Deliberately more than fit on any of the
-/// panels, so the scroll indicator and the keep-the-selection-visible logic
-/// both have something to do.
+/// Rows in the scrolling section. With the sections above it, more than fit
+/// on any panel, so the scroll indicator and the keep-the-selection-visible
+/// logic both have something to do.
 const SCROLL_ROWS: usize = 14;
 
 /// Everything this screen can be told.
@@ -63,9 +60,6 @@ pub enum Msg {
 #[derive(Default)]
 pub struct DevelopersScreen {
     units: Units,
-    /// Stands in for the firmware's heap figures. It moves between readings on
-    /// purpose: a static number would let a repaint test pass without anything
-    /// having been redrawn.
     heap: Heap,
     /// Whether the scale picker is open. The screen owns this; the framework
     /// only takes input over once the dialog is in the tree.
@@ -93,8 +87,8 @@ impl DevelopersScreen {
         }
     }
 
-    /// Three rows carrying a right-hand value. Tapping any of them opens the
-    /// picker, since the scale applies to all three.
+    /// Five rows carrying a right-hand value. Tapping any of them opens the
+    /// picker, since the scale applies to all of them.
     fn memory_usage_view(&self) -> List<Msg> {
         let heap = self.heap.reading();
         let row = |label: &str, bytes: i32| {

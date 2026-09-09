@@ -1,10 +1,9 @@
 //! A stand-in for the firmware's heap figures.
 //!
-//! The screen this came from read real numbers from the device it ran on.
-//! There is no device here, so this makes some up — but it makes up *moving*
-//! ones, which matters more than it sounds: a screen showing a constant would
-//! let a repaint test pass without anything having been redrawn, and that is
-//! the exact class of bug the tests around it exist to catch.
+//! There is no device here, so the numbers are made up — but *moving* ones:
+//! a screen showing a constant would let a repaint test pass without anything
+//! having been redrawn, which is the exact class of bug the tests around it
+//! exist to catch.
 
 /// One reading, in bytes.
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]

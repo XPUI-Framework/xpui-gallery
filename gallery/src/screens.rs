@@ -308,14 +308,10 @@ impl Screen for TextSizes {
             Text::new("Interface bold").font(Font::ui().bold()),
             Text::new("Small").font(Font::ui_small()),
             Divider::new(),
-            // Wider than the panel on purpose, and what it shows is that
-            // `Text` does not truncate: it paints the string it was given, so
+            // Wider than the panel on purpose: `Text` does not truncate, so
             // the line runs past the content inset and the last glyph is cut
-            // by the edge of the panel. `ListRow` is the widget that measures
-            // and ellipses: the Developers example has two rows long enough to
-            // show it. Six of the seven `text_<board>.png` goldens are what
-            // this behaviour looks like — on a Badger the line is below the
-            // fold and not in the picture at all.
+            // by the panel's edge. `ListRow` is the widget that measures and
+            // ellipses; the Developers example has rows long enough to show it.
             Text::new("A line long enough that it cannot possibly fit across the panel"),
         ]))
         .title("Text")

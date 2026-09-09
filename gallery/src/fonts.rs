@@ -1,44 +1,20 @@
 //! Two typefaces the backend has never heard of.
 //!
-//! This is the point of a registry rather than a fixed set: the backend ships
-//! one family, and anything that wants another brings it. A firmware for a
-//! board with room in flash adds three; a firmware for a board without adds
-//! none and pays for none.
-//!
-//! Both are assembled with [`font_tier!`], which is the same macro the
-//! backend builds Helvetica with — there is no privileged path.
-//!
-//! # The cost, measured
-//!
-//! Each family here is twelve faces of bitmaps in `.rodata`, and they are not
-//! cheap. Built for a Badger 2040:
-//!
-//! | what [`FAMILIES`] holds | firmware |
-//! |---|---|
-//! | `&[&HELVETICA]` — the backend's own, alone | 121 KB |
-//! | all three | 221 KB |
-//!
-//! Measured with `arm-none-eabi-size` on the linked `badger2040` binary, by
-//! shortening this list and rebuilding. The absolute figures move with every
-//! change to the firmware; the difference between the rows is the number that
-//! means something, and it has held at **99.8 KB**.
-//!
-//! **The two extra families nearly double the firmware.** That is 5% of a 2MB
-//! RP2040's flash and perfectly affordable there; it would be impossible on a
-//! part with 256K. This is exactly why the backend ships one family and takes
-//! whatever else it is given: a board that cannot spare the space shortens
-//! [`FAMILIES`] and pays for nothing it does not use — the two below are
-//! reachable from nowhere else, so dropping them from that list drops their
-//! bitmaps from the binary.
+//! The backend ships one family, and anything that wants another brings it,
+//! assembled with [`font_tier!`] — the same macro the backend builds its own
+//! with; there is no privileged path. Each family here is twelve faces of
+//! bitmaps in `.rodata`, and together the two add about 100 KB to a Badger
+//! 2040 firmware; a board that cannot spare it shortens [`FAMILIES`].
 
 use xpui_eg::{Family, HELVETICA, Tier, font_tier, u8g2};
 
-/// Courier — a fixed-pitch serif, and about as far from Helvetica as this
-/// collection goes.
-///
-/// The declared bands are the **taller** of each pair: this family's bold runs
-/// one to two pixels above its regular, which Helvetica's does not. Getting
-/// that wrong puts the extra rows of a bold heading into the row below it.
+// The declared bands are the **taller** of each pair, in both families
+// below: a bold can run one to two pixels above its regular, which
+// Helvetica's does not, and getting that wrong puts the extra rows of a bold
+// heading into the row below it.
+
+// Courier — a fixed-pitch serif, and about as far from Helvetica as this
+// collection goes.
 const COUR_08: Tier = font_tier!(12, u8g2::u8g2_font_courR08_tf, u8g2::u8g2_font_courB08_tf);
 const COUR_10: Tier = font_tier!(17, u8g2::u8g2_font_courR10_tf, u8g2::u8g2_font_courB10_tf);
 const COUR_12: Tier = font_tier!(18, u8g2::u8g2_font_courR12_tf, u8g2::u8g2_font_courB12_tf);
@@ -52,8 +28,8 @@ pub static COURIER: Family = Family {
     fallback: Some(&HELVETICA),
 };
 
-/// New Century Schoolbook — a book serif, cut for reading rather than for
-/// labels.
+// New Century Schoolbook — a book serif, cut for reading rather than for
+// labels.
 const NCEN_08: Tier = font_tier!(14, u8g2::u8g2_font_ncenR08_tf, u8g2::u8g2_font_ncenB08_tf);
 const NCEN_10: Tier = font_tier!(19, u8g2::u8g2_font_ncenR10_tf, u8g2::u8g2_font_ncenB10_tf);
 const NCEN_12: Tier = font_tier!(20, u8g2::u8g2_font_ncenR12_tf, u8g2::u8g2_font_ncenB12_tf);

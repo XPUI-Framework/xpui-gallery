@@ -2,12 +2,11 @@
 #
 # `gallery` is both: the screens the simulator opens and both firmwares flash,
 # and the seven-board suite that proves them — every screen on every panel,
-# against a committed PNG. `tutorial` is the screen `crates/xpui`'s tutorial
-# walks to, in a window, so the prose and the runnable thing stay side by side.
+# against a committed PNG. `tutorial` is the screen `xpui`'s tutorial walks
+# to, in a window, so the prose and the runnable thing stay side by side.
 [workspace]
 # `xtask` is the gate. A member rather than a separate workspace so one
-# `cargo test` reaches its tests, and so the size ratchet counts its source
-# like any other.
+# `cargo test` reaches its tests.
 members = ["gallery", "tutorial", "xtask"]
 resolver = "3"
 
@@ -33,15 +32,17 @@ xpui-simulator = { git = "https://github.com/XPUI-Framework/xpui-simulator", bra
 
 xpui-gallery = { path = "gallery" }
 
-# What a `cargo build --release` of this repository alone produces.
-#
-# It is **not** what ships. A library's profile applies only when that library
-# is the top of the build; when a firmware links it, the firmware's workspace
-# sets the profile for everything in the graph. So this exists to make a local
-# release build resemble the real one, not to control it.
-#
-# The repositories that do produce a flashed artifact — `xpui-rp2040`,
-# `xpui-esp32`, `xpui-cpp` — use `opt-level = "z"` and say why there.
+[workspace.lints.clippy]
+undocumented_unsafe_blocks = "deny"
+too_long_first_doc_paragraph = "deny"
+
+[workspace.lints.rustdoc]
+unescaped_backticks = "deny"
+
+# What a `cargo build --release` of this repository alone produces — not what
+# ships. A library's profile applies only at the top of a build; a firmware's
+# workspace sets the profile for everything it links; `xpui-rp2040`,
+# `xpui-esp32` and `xpui-cpp` use `opt-level = "z"`.
 [profile.release]
 opt-level = "s"
 lto = true

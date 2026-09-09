@@ -7,8 +7,9 @@ use crate::screens;
 
 /// Every example, in the order the menu shows them.
 ///
-/// One table rather than a match at each site, so adding an example is one
-/// line and the menu, the count and the opener cannot disagree.
+/// Adding one is a variant, an entry in `ALL` and an arm in each match
+/// below. The compiler catches a missing arm; only `ALL` can silently leave
+/// an example out of the menu.
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum Example {
     Controls,
@@ -55,7 +56,6 @@ impl Example {
         }
     }
 
-    /// Pushes this example onto the stack.
     fn open(self) {
         match self {
             Example::Controls => present(screens::Controls::new()),

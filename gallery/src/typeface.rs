@@ -27,9 +27,9 @@ pub struct Typefaces {
     chosen: usize,
     /// How many sizes each family was cut in, already written out.
     ///
-    /// Built once here rather than in `body`, which the runtime calls twice
-    /// per paint: `format!` allocates and pulls in `core::fmt`, and a screen
-    /// that formats per frame pays for it per frame.
+    /// Built once here rather than in `body`, which runs on every paint and
+    /// every frame carrying input: `format!` allocates and pulls in
+    /// `core::fmt`.
     sizes: Vec<String>,
 }
 
@@ -49,7 +49,6 @@ impl Typefaces {
         }
     }
 
-    /// The family in use.
     pub fn chosen(&self) -> &'static Family {
         self.families[self.chosen]
     }

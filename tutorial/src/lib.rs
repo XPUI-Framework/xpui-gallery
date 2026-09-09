@@ -7,9 +7,8 @@
 //! simulator, so those three calls are checked against this crate's `main`
 //! instead, which the gate compiles.
 //!
-//! This crate is the end state: the finished screen, screenshot-tested like
-//! any other, with a `main` that opens it in a window. Reading the two side by
-//! side is the point — the prose explains why, and this is what it adds up to.
+//! Screenshot-tested like any other screen, with a `main` that opens it in a
+//! window.
 
 use xpui::screen::Screen;
 use xpui::{
@@ -17,8 +16,9 @@ use xpui::{
     finish_screen, hstack, vstack,
 };
 
-/// The preset lengths the picker offers, in minutes.
+/// The preset lengths the picker offers.
 const PRESETS: [&str; 4] = ["5 minutes", "15 minutes", "30 minutes", "1 hour"];
+/// The same presets, in minutes.
 const PRESET_MINUTES: [i32; 4] = [5, 15, 30, 60];
 
 /// Everything this screen can be told.

@@ -8,6 +8,9 @@ authors.workspace = true
 repository.workspace = true
 publish = false
 
+[lints]
+workspace = true
+
 # A library as well as a binary, for the same reason the gallery is: the tests
 # drive the screen, and a test cannot open a window.
 [lib]
@@ -20,9 +23,10 @@ path = "src/main.rs"
 
 [dependencies]
 xpui.workspace = true
+# Unconditional: this crate opens a window and never builds for a device.
 xpui-simulator.workspace = true
-# The board the window opens on. One vendor's crate, because there is no
-# "every board" crate any more — a project takes the devices it targets.
+# The board the window opens on: one vendor's crate, because a project takes
+# the devices it targets.
 xpui-boards-xteink.workspace = true
 
 [dev-dependencies]
