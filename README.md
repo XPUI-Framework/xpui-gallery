@@ -1,9 +1,10 @@
+[![CI](https://github.com/XPUI-Framework/xpui-gallery/actions/workflows/ci.yml/badge.svg)](https://github.com/XPUI-Framework/xpui-gallery/actions/workflows/ci.yml) [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 # `xpui-gallery`
 
-> ⚠️ **Under heavy development.** Not production-ready. The API can break
-> without notice. Use at your own risk.
-
-[![CI](https://github.com/XPUI-Framework/xpui-gallery/actions/workflows/ci.yml/badge.svg)](https://github.com/XPUI-Framework/xpui-gallery/actions/workflows/ci.yml) [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+> [!WARNING]
+> Under heavy development. Not production-ready. The API can break without
+> notice. Use at your own risk.
 
 Ten captures on seven boards, and the suite that proves the framework paints
 the same thing on all of them. Run it and you have a window showing every

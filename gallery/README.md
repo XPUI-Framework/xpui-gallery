@@ -1,7 +1,6 @@
-# The gallery
+[![CI](https://github.com/XPUI-Framework/xpui-gallery/actions/workflows/ci.yml/badge.svg)](https://github.com/XPUI-Framework/xpui-gallery/actions/workflows/ci.yml) [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](../LICENSE)
 
-> ⚠️ **Under heavy development.** Not production-ready. The API can break
-> without notice. Use at your own risk.
+# The gallery
 
 Example screens built on [`xpui`](https://github.com/XPUI-Framework/xpui-framework),
 in a window, and the library both firmwares flash.
