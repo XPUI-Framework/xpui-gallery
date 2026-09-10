@@ -10,6 +10,8 @@
 //! Screenshot-tested like any other screen, with a `main` that opens it in a
 //! window.
 
+#![deny(missing_docs)]
+
 use xpui::screen::Screen;
 use xpui::{
     Hint, List, ListRow, Modal, NavigationScreen, Point, Scrim, Stepper, Text, Toggle, View,
@@ -34,9 +36,14 @@ pub enum Message {
     /// The state the toggle is moving *to*, so this screen never writes
     /// `!self.something` — the bug that makes a toggle flip twice per press.
     SetSleepOnClose(bool),
+    /// The presets row tapped: opens the picker.
     OpenPresets,
+    /// A preset chosen from the picker, as an index into `PRESET_MINUTES`.
     ChoosePreset(usize),
+    /// The picker dismissed without choosing.
     DismissPresets,
+    /// Illustrates `finish_screen()`. Nothing on this screen sends it: the
+    /// Confirm hint is a label, and the key reaches the focused control.
     Done,
 }
 
@@ -61,6 +68,7 @@ impl Default for SleepTimer {
 }
 
 impl SleepTimer {
+    /// Fifteen minutes, sleeping on close, picker closed.
     pub fn new() -> Self {
         SleepTimer {
             minutes: 15,
@@ -70,14 +78,17 @@ impl SleepTimer {
         }
     }
 
+    /// How long before the device sleeps.
     pub fn minutes(&self) -> i32 {
         self.minutes
     }
 
+    /// Whether closing the cover sleeps the device.
     pub fn sleeps_on_close(&self) -> bool {
         self.sleep_on_close
     }
 
+    /// Whether the presets picker is up.
     pub fn is_picking(&self) -> bool {
         self.picking
     }

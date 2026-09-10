@@ -8,7 +8,9 @@
 /// One reading, in bytes.
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub struct Reading {
+    /// The whole heap.
     pub total: i32,
+    /// What is not handed out.
     pub free: i32,
     /// The biggest single allocation that would still fit.
     ///

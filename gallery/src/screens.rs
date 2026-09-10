@@ -20,11 +20,16 @@ pub struct Controls {
     downloaded: u32,
 }
 
+/// Everything the controls screen can be told.
 #[derive(Clone, Copy)]
 pub enum ControlsMsg {
+    /// An absolute brightness, from the stepper's track.
     Brightness(i32),
+    /// A nudge of -1 or +1, from the stepper's glyphs or the Left/Right keys.
     BrightnessStep(i32),
+    /// An absolute warmth, from the slider.
     Warmth(i32),
+    /// The state the toggle is moving *to*.
     Frontlight(bool),
 }
 
@@ -35,6 +40,7 @@ impl Default for Controls {
 }
 
 impl Controls {
+    /// The screen at its starting values.
     pub fn new() -> Self {
         Controls {
             brightness: 60,
@@ -104,7 +110,9 @@ impl Screen for Controls {
 
 // -- lists -----------------------------------------------------------------
 
+/// One-line rows, and rows with a subtitle.
 pub struct Lists {
+    /// The row last tapped, so a test can assert a tap landed.
     pub chosen: Option<usize>,
 }
 
@@ -115,6 +123,7 @@ impl Default for Lists {
 }
 
 impl Lists {
+    /// The screen with nothing tapped yet.
     pub fn new() -> Self {
         Lists { chosen: None }
     }
@@ -149,15 +158,20 @@ impl Screen for Lists {
 
 // -- dialogs ---------------------------------------------------------------
 
+/// A picker over content.
 pub struct Dialogs {
     open: bool,
     font: usize,
 }
 
+/// Everything the dialogs screen can be told.
 #[derive(Clone, Copy)]
 pub enum DialogMsg {
+    /// The row tapped: opens the picker.
     Open,
+    /// An option chosen from the picker, by index.
     Chose(usize),
+    /// The picker dismissed without choosing.
     Dismiss,
 }
 
@@ -170,6 +184,7 @@ impl Default for Dialogs {
 }
 
 impl Dialogs {
+    /// The screen with the picker closed and the first typeface chosen.
     pub fn new() -> Self {
         Dialogs {
             open: false,
@@ -177,10 +192,12 @@ impl Dialogs {
         }
     }
 
+    /// Whether the picker is up.
     pub fn is_open(&self) -> bool {
         self.open
     }
 
+    /// The typeface the row reads.
     pub fn chosen(&self) -> &'static str {
         FONTS[self.font]
     }
@@ -232,6 +249,7 @@ impl Screen for Dialogs {
 
 // -- scrolling -------------------------------------------------------------
 
+/// More rows than fit on any panel.
 pub struct Scrolling;
 
 impl Default for Scrolling {
@@ -241,6 +259,7 @@ impl Default for Scrolling {
 }
 
 impl Scrolling {
+    /// The screen; it holds no state.
     pub fn new() -> Self {
         Scrolling
     }
@@ -284,6 +303,7 @@ const ROWS: [&str; 8] = [
 
 // -- text ------------------------------------------------------------------
 
+/// Every font role and weight, and a line that runs off the panel.
 pub struct TextSizes;
 
 impl Default for TextSizes {
@@ -293,6 +313,7 @@ impl Default for TextSizes {
 }
 
 impl TextSizes {
+    /// The screen; it holds no state.
     pub fn new() -> Self {
         TextSizes
     }

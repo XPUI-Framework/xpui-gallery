@@ -15,6 +15,7 @@
 //! [`Board`] and an entry point.
 
 #![cfg_attr(target_os = "none", no_std)]
+#![deny(missing_docs)]
 
 extern crate alloc;
 
@@ -73,4 +74,15 @@ where
         .with_keys(board.keys)
         .with_left_right_keys(board.has_left_right_keys())
         .with_fonts(Fonts::for_metrics(&metrics))
+}
+
+/// The two `docs/` pages, mounted: the conformance page's snippet is a
+/// doctest, so a re-bless instruction that stops matching the API fails, and
+/// `design.md` is mounted so a fence added to it is compiled from the start.
+#[cfg(doctest)]
+mod guides {
+    #[doc = include_str!("../../docs/conformance.md")]
+    pub mod conformance {}
+    #[doc = include_str!("../../docs/design.md")]
+    pub mod design {}
 }

@@ -49,6 +49,9 @@ impl Typefaces {
         }
     }
 
+    /// The family every screen is set in. A swap takes effect at the top of
+    /// the next frame, so for one frame this is what the list chose rather
+    /// than what is painted.
     pub fn chosen(&self) -> &'static Family {
         self.families[self.chosen]
     }

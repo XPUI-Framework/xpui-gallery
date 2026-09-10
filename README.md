@@ -3,16 +3,13 @@
 > ⚠️ **Under heavy development.** Not production-ready. The API can break
 > without notice. Use at your own risk.
 
+[![CI](https://github.com/XPUI-Framework/xpui-gallery/actions/workflows/ci.yml/badge.svg)](https://github.com/XPUI-Framework/xpui-gallery/actions/workflows/ci.yml) [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Ten captures on seven boards, and the suite that proves the framework paints
-the same thing on all of them.
-
-Run it and you have a window showing every widget `xpui` has, on whichever
-device you name:
-
-```bash
-cargo run -p xpui-gallery -- --board x3     # and x4, x4pro, sticky,
-                                            # badger2040, tufty2040, inkyframe
-```
+the same thing on all of them. Run it and you have a window showing every
+widget `xpui` has, on whichever device you name. The same screens are what
+the two firmwares flash: they have been run on a Badger and a Tufty, and they
+build for an X3 and a Sticky, which have no panel driver yet.
 
 ## Which crate you want
 
@@ -25,46 +22,58 @@ cargo run -p xpui-gallery -- --board x3     # and x4, x4pro, sticky,
 and a backend actually meet — which is why the tests that need both live here
 rather than in either.
 
-## Why the seven-board suite is here and not in a backend
+## Using it
 
-A per-board regression is the easiest kind to ship and the hardest to see: the
-suite is green, the board you looked at is right, and two of the other six are
-broken. That has happened — a change to what the Pimoroni boards *paint* left
-what they *send* alone, so every hint label sat one key off and no key produced
-Back, on two boards, with 169 tests passing.
+```bash
+cargo run -p xpui-gallery -- --board x3     # and x4, x4pro, sticky,
+                                            # badger2040, tufty2040, inkyframe
+```
 
-`gallery::boards::ALL` is composed here from the three vendor crates — there
-is deliberately none across vendors below this level — and a `const` assertion
-fails if a vendor gains or loses a board and this list does not follow.
+A firmware takes the screens as a library:
 
-## What it depends on, and what depends on it
+```toml
+[dependencies]
+xpui-gallery = { git = "https://github.com/XPUI-Framework/xpui-gallery", branch = "main" }
+```
 
-Everything below it:
+It depends on everything below it —
 [`xpui`](https://github.com/XPUI-Framework/xpui-framework),
 [`xpui-chrome`](https://github.com/XPUI-Framework/xpui-chrome),
 [`xpui-boards`](https://github.com/XPUI-Framework/xpui-boards),
 [`xpui-backends`](https://github.com/XPUI-Framework/xpui-backends) and
-[`xpui-simulator`](https://github.com/XPUI-Framework/xpui-simulator). It is the
-one repository that names them all, because it is the caller.
+[`xpui-simulator`](https://github.com/XPUI-Framework/xpui-simulator) — because
+it is the caller, the one repository that names them all; and
+[`xpui-rp2040`](https://github.com/XPUI-Framework/xpui-rp2040) and
+[`xpui-esp32`](https://github.com/XPUI-Framework/xpui-esp32) each flash these
+screens onto one device. Nothing is on crates.io yet, which is what the
+banner above is about.
 
-Used by [`xpui-rp2040`](https://github.com/XPUI-Framework/xpui-rp2040) and
-[`xpui-esp32`](https://github.com/XPUI-Framework/xpui-esp32), each of which
-flashes these screens onto one device.
+## Requirements
+
+SDL2, which the simulator links: `brew install sdl2` on macOS,
+`apt install libsdl2-dev` on Debian and Ubuntu. The tests run headless and
+need no display.
 
 ## Checking it
 
 ```bash
 ./build-and-test.sh
-UPDATE_SNAPSHOTS=1 cargo test    # accept intended changes — then READ the diff
-open target/screenshots/         # and look at what was rendered
 ```
 
 The checks themselves are in [`xtask/`](xtask/) — this repository's own list,
 in Rust, holding nothing it does not run. `./build-and-test.sh fix` formats
-in place first.
+in place first. A first run of a new golden writes it **and fails**, so nobody
+commits a picture they never looked at; [docs/conformance.md](docs/conformance.md)
+is how to read a failure and re-bless, and
+[docs/contributing.md](docs/contributing.md) is how a change is reviewed.
 
-A first run of a new golden writes it **and fails**, so nobody commits a
-picture they never looked at.
+## Where next
+
+| | |
+|---|---|
+| [docs/conformance.md](docs/conformance.md) | the seven-board suite: what it captures, how to run it, what a diff looks like, and how to re-bless |
+| [docs/design.md](docs/design.md) | why the suite is here, why the gallery is a library, the double press, the cost of two typefaces |
+| [docs/contributing.md](docs/contributing.md) | SDL2, every board every time, the gate, the five review steps, and how a commit is written |
 
 ## Where it sits
 

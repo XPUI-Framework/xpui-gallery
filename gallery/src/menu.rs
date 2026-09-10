@@ -12,16 +12,25 @@ use crate::screens;
 /// an example out of the menu.
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum Example {
+    /// Every value control the chrome paints, on one screen.
     Controls,
+    /// Rows with and without subtitles, and rows carrying a value.
     Lists,
+    /// An option picker opened over a screen that keeps painting behind it.
     Dialogs,
+    /// Twenty-four rows, more than the tallest panel here shows at once.
     Scrolling,
+    /// What the faces look like at each size, and where a label is cut.
     Text,
+    /// Switches every screen to another font family, at run time.
     Typeface,
+    /// The heap, the frame timings and every control together.
     Developers,
 }
 
 impl Example {
+    /// What the menu iterates, and what the screenshot suite renders on every
+    /// board. A variant missing from here is an example nothing opens.
     pub const ALL: [Example; 7] = [
         Example::Controls,
         Example::Lists,
@@ -32,6 +41,7 @@ impl Example {
         Example::Developers,
     ];
 
+    /// The row's title, and the screen's.
     pub fn title(self) -> &'static str {
         match self {
             Example::Controls => "Controls",
@@ -44,6 +54,7 @@ impl Example {
         }
     }
 
+    /// The row's subtitle.
     pub fn summary(self) -> &'static str {
         match self {
             Example::Controls => "Slider, stepper, toggle, progress",
@@ -82,6 +93,7 @@ impl Default for Menu {
 }
 
 impl Menu {
+    /// The menu with nothing opened yet.
     pub fn new() -> Self {
         Menu { opened: None }
     }

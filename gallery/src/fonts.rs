@@ -22,6 +22,7 @@ const COUR_14: Tier = font_tier!(21, u8g2::u8g2_font_courR14_tf, u8g2::u8g2_font
 const COUR_18: Tier = font_tier!(27, u8g2::u8g2_font_courR18_tf, u8g2::u8g2_font_courB18_tf);
 const COUR_24: Tier = font_tier!(34, u8g2::u8g2_font_courR24_tf, u8g2::u8g2_font_courB24_tf);
 
+/// Courier, six sizes, falling back to Helvetica for a missing glyph.
 pub static COURIER: Family = Family {
     name: "Courier",
     tiers: &[COUR_08, COUR_10, COUR_12, COUR_14, COUR_18, COUR_24],
@@ -37,6 +38,8 @@ const NCEN_14: Tier = font_tier!(24, u8g2::u8g2_font_ncenR14_tf, u8g2::u8g2_font
 const NCEN_18: Tier = font_tier!(30, u8g2::u8g2_font_ncenR18_tf, u8g2::u8g2_font_ncenB18_tf);
 const NCEN_24: Tier = font_tier!(41, u8g2::u8g2_font_ncenR24_tf, u8g2::u8g2_font_ncenB24_tf);
 
+/// New Century Schoolbook, six sizes, falling back to Helvetica for a missing
+/// glyph.
 pub static CENTURY: Family = Family {
     name: "Century",
     tiers: &[NCEN_08, NCEN_10, NCEN_12, NCEN_14, NCEN_18, NCEN_24],

@@ -17,7 +17,9 @@ use alloc::string::{String, ToString};
 /// ```
 #[derive(Copy, Clone, Debug, Default, PartialEq, Eq)]
 pub enum Units {
+    /// Whole bytes, grouped in thousands.
     Bytes,
+    /// Kilobytes, rounded to nearest.
     #[default]
     Kilobytes,
 }

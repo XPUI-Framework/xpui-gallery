@@ -43,3 +43,50 @@ why the backend ships one family and takes whatever else it is given — a board
 that cannot spare the space shortens `FAMILIES` and pays for nothing it does
 not use, because the two families are reachable from nowhere else and dropping
 them from that list drops their bitmaps from the binary.
+
+## The seven-board suite is here, not in a backend (`gallery::boards`)
+
+A per-board regression is the easiest kind to ship and the hardest to see:
+the suite is green, the board you looked at is right, and two of the other
+six are broken. That has happened — a change to what the Pimoroni boards
+*paint* left what they *send* alone, so every hint label sat one key off and
+no key produced Back, on two boards, with 169 tests passing.
+
+The suite lives here because this is where a board and a backend actually
+meet. `gallery::boards::ALL` is composed here from the three vendor crates —
+there is deliberately none across vendors below this level — and a `const`
+assertion fails if a vendor gains or loses a board and this list does not
+follow.
+
+## A library and a binary (`gallery`)
+
+The screens live in `src/`, and `main.rs` does nothing but read its two flags
+and open a window around them. That is so the tests can drive every screen
+without one: `tests/gallery.rs` walks the menu, opens each example, presses
+buttons and checks what came back; `tests/screenshots.rs` renders the same
+screens to a framebuffer, once per board, and compares each against a
+committed PNG. It is also what lets two firmwares link the screens without
+dragging a window in.
+
+## The framework's dogfood (`gallery::screens`, `::typeface`, `::developers`)
+
+If a screen here needs a workaround, `xpui` has a gap. Two things in these
+files exist because of that:
+
+- **`format!` belongs out of `body()`.** `body()` runs on every paint *and*
+  every frame carrying input, so a string is built when its value changes and
+  kept: `Typefaces` builds its size labels in `new`, the tutorial's
+  `SleepTimer` rebuilds one in `update`, and a control that shows its own
+  number, like `Stepper`, takes `.readout("%")` and formats nothing. A
+  `format!` in `body()` allocates several times a second and drags
+  `core::fmt` into the binary.
+
+  **`DevelopersScreen` breaks this rule and is the reason it is written
+  down.** Its five memory rows call `Units::format` from inside `body()`, so
+  opening Developers formats five values and allocates about fifteen times on
+  every paint. On a laptop nothing shows; on a Badger it is the screen that
+  would. Nothing catches it — `xpui`'s counting allocator is `cfg(test)`
+  inside `xpui`, so no test here can assert it.
+- **Every screen wraps itself in a `NavigationScreen`.** Without one there is
+  no header and no button hints, which looks broken the moment you open it
+  from the menu rather than on its own.

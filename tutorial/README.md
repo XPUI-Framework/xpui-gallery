@@ -12,26 +12,29 @@ the framework has nothing to draw with. That is the dependency rule: `xpui`
 depends on nothing, so the crate that owns the tutorial cannot open a window to
 show you the result.
 
+## Using it
+
 ```bash
 cargo run -p xpui-tutorial            # in a window
 cargo test -p xpui-tutorial           # eleven tests, no window
 ```
 
-## Why the crate exists at all
-
-**So the tutorial cannot rot.** Its eight `rust` blocks are doctests in the
-framework, which proves they compile; this crate proves the finished screen
-*works* — that its rows respond, its dialog opens, its Back does what the page
-says. Eleven tests: nine driving the screen the way a person does, and two
-comparing the painted frame against a committed image.
-
-Change the tutorial's API and the framework's doctests fail. Change what the
+**The crate exists so the tutorial cannot rot.** Its eight `rust` blocks are
+doctests in the framework, which proves they compile; this crate proves the
+finished screen *works* — that its rows respond, its dialog opens, its Back
+does what the page says. Eleven tests: nine driving the screen the way a
+person does, and two comparing the painted frame against a committed image.
+Change the tutorial's API and the framework's doctests fail; change what the
 screen *does* and these fail. Neither catches the other.
 
-The file differs from the page in three ways, none of them about the framework:
-it keeps the builder in a `let` so a `--frames` flag can drive it headlessly,
-titles the window, and passes `SleepTimer::new()` because by step 8 the screen
-has state.
+`src/main.rs` differs from the page in three ways, none of them about the
+framework: it keeps the builder in a `let` so a `--frames` flag can drive it
+headlessly, gives the window this repository's title rather than the page's,
+and passes `SleepTimer::new()` because by step 8 the screen has state.
+
+## Checking it
+
+The gate is the repository's; run `./build-and-test.sh` from the root.
 
 ## License
 

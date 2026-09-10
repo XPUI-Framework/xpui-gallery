@@ -57,6 +57,7 @@ pub enum Msg {
     BenchRow(usize),
 }
 
+/// Heap figures, a widget bench and a scrolling section, on one screen.
 #[derive(Default)]
 pub struct DevelopersScreen {
     units: Units,
@@ -77,6 +78,7 @@ pub struct DevelopersScreen {
 }
 
 impl DevelopersScreen {
+    /// The screen at its starting values.
     pub fn new() -> Self {
         DevelopersScreen {
             level: 50,
