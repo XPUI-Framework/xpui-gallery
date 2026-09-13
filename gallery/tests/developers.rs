@@ -33,6 +33,9 @@ fn kilobytes_round_rather_than_truncate() {
     // reads as "nothing here" rather than "not quite one".
     assert_eq!(Units::Kilobytes.format(700), "1 KB");
     assert_eq!(Units::Kilobytes.format(1_048_576), "1,024 KB");
+    // A negative figure rounds away from zero too, rather than reading as none.
+    assert_eq!(Units::Kilobytes.format(-700), "-1 KB");
+    assert_eq!(Units::Kilobytes.format(-300), "0 KB");
 }
 
 #[test]

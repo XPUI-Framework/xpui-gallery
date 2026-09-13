@@ -39,8 +39,16 @@ impl Units {
     pub fn format(self, bytes: i32) -> String {
         match self {
             Units::Bytes => format!("{} B", Self::grouped(bytes)),
-            Units::Kilobytes => format!("{} KB", Self::grouped((bytes + 512) / 1024)),
+            Units::Kilobytes => format!("{} KB", Self::grouped(Self::kilobytes(bytes))),
         }
+    }
+
+    /// To the nearest kilobyte, half away from zero. Integer division truncates
+    /// toward zero, so adding half before dividing rounds a negative figure the
+    /// wrong way.
+    fn kilobytes(bytes: i32) -> i32 {
+        let half = if bytes < 0 { -512 } else { 512 };
+        bytes.saturating_add(half) / 1024
     }
 
     /// Digit grouping. `core` has no locale formatting, and a six-figure heap

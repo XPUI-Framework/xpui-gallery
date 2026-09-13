@@ -15,7 +15,7 @@
 use xpui::screen::Screen;
 use xpui::{
     Hint, List, ListRow, Modal, NavigationScreen, Point, Scrim, Stepper, Text, Toggle, View,
-    finish_screen, hstack, vstack,
+    hstack, vstack,
 };
 
 /// The preset lengths the picker offers.
@@ -42,9 +42,6 @@ pub enum Message {
     ChoosePreset(usize),
     /// The picker dismissed without choosing.
     DismissPresets,
-    /// Illustrates `finish_screen()`. Nothing on this screen sends it: the
-    /// Confirm hint is a label, and the key reaches the focused control.
-    Done,
 }
 
 /// A sleep timer: how long before the device sleeps, and what to do on close.
@@ -125,7 +122,7 @@ impl Screen for SleepTimer {
                 .on_change(Message::SetSleepOnClose),
         ])
         .title("Sleep timer")
-        .hints(Hint::Standard, Hint::text("Save"), Hint::None, Hint::None)
+        .hints(Hint::Standard, Hint::Standard, Hint::None, Hint::None)
         // A dialog captures input: nothing behind it is reachable while it is
         // in the tree. This screen decides only whether it is there.
         .overlay_if(
@@ -148,7 +145,6 @@ impl Screen for SleepTimer {
                 self.picking = false;
             }
             Message::DismissPresets => self.picking = false,
-            Message::Done => finish_screen(),
         }
         self.label = label_for(self.minutes);
     }

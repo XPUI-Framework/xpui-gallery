@@ -453,9 +453,9 @@ fn an_open_value_row_keeps_its_number_on_screen() {
 
 /// Confirm on a value row does not quietly change what the other keys mean.
 ///
-/// Spec 26 opens an edit mode on Confirm that repaints an identical frame: Up
-/// and Down stop moving between rows and adjust instead, and Back stops leaving
-/// the screen. Whatever replaces it has to be visible or must not happen — a
+/// An edit mode opened on Confirm that repaints an identical frame changes what
+/// Up and Down do — adjusting instead of moving between rows — and Back stops
+/// leaving the screen. Whatever replaces it has to be visible or must not happen — a
 /// person cannot be expected to discover that four keys changed meaning.
 #[test]
 fn confirm_does_not_silently_change_what_the_keys_mean() {

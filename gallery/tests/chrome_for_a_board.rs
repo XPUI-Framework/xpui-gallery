@@ -4,11 +4,10 @@
 //! measures to. Nothing below this crate joins the two — that is
 //! [`gallery::metrics_for`], and these are the claims it has to keep.
 //!
-//! These tests used to live in `crates/boards/tests/boards.rs`, where a board
-//! **stored** the chrome it had been given and could therefore disagree with
-//! the panel it described. That class of fault is gone: there is nothing
-//! stored to drift. What is left is what a derivation cannot make true by
-//! construction — that the numbers it produces are usable on the glass.
+//! A board stores no chrome, so it cannot disagree with the panel it describes:
+//! there is nothing stored to drift. What is left is what a derivation cannot
+//! make true by construction — that the numbers it produces are usable on the
+//! glass.
 //!
 //! The millimetre floors are next door, in `tests/physical.rs`.
 
@@ -36,10 +35,8 @@ fn display() -> TestDisplay {
 /// Two rows to compare and one to show there is more. Below that a list is not
 /// a list, and the screen is unusable rather than merely cramped.
 ///
-/// This claim was asserted twice before the chrome was injected — once in
-/// `crates/boards` against the metrics a board stored, and once in
-/// `tests/screenshots.rs` against the same number. There is one derivation
-/// now, so there is one test.
+/// One derivation, so one test: `tests/screenshots.rs` paints with the same
+/// numbers and does not assert them again.
 #[test]
 fn every_board_holds_at_least_three_list_rows() {
     for board in gallery::boards::ALL {
@@ -55,12 +52,12 @@ fn every_board_holds_at_least_three_list_rows() {
     }
 }
 
-/// A device that takes Back and Confirm from its touchscreen has no row of keys
-/// along the bottom, so a hint bar there names keys that do not exist.
+/// A device with no row of keys along the bottom gets no hint bar, which would
+/// name keys that do not exist.
 ///
 /// The firmware's themes return before drawing one on exactly these boards.
 ///
-/// The touch half of this is how [`metrics_for`] is written, and would survive
+/// The empty half of this is how [`metrics_for`] is written, and would survive
 /// the function being wrong in every other way. The other half is the one that
 /// bites: it says every keyed board's panel preset reserves a band at all, and
 /// nothing in [`Metrics::for_panel`](xpui_chrome::Metrics::for_panel) promises
@@ -69,11 +66,11 @@ fn every_board_holds_at_least_three_list_rows() {
 #[test]
 fn only_a_board_with_keys_reserves_a_hint_band() {
     for board in gallery::boards::ALL {
-        if board.touch {
+        if board.keys.is_empty() {
             assert_eq!(
                 metrics_for(board).button_hints_height,
                 0,
-                "{}: a touch board must not reserve a band for keys it lacks",
+                "{}: a board must not reserve a band for keys it lacks",
                 board.name
             );
         } else {
@@ -90,10 +87,9 @@ fn only_a_board_with_keys_reserves_a_hint_band() {
 ///
 /// `Board::custom` is the escape hatch for a panel nobody here has described,
 /// and it is the one board [`metrics_for`] can be handed that is not in
-/// `gallery::boards::ALL` — so the loop above never reaches it. Before the chrome was
-/// injected a custom board stored `Metrics::for_panel` unconditionally, hint
-/// band and all, because `Board::custom` never called `without_button_hints`.
-/// Deriving it fixed that, and this is what says so.
+/// `gallery::boards::ALL` — so the loop above never reaches it. `custom` gives
+/// a touch board an empty row, and a hint band derived from the row keeps a
+/// finger's panel clear of one.
 #[test]
 fn a_custom_touch_board_gets_no_hint_band_either() {
     let finger = Board::custom("finger", 480, 800, true);
@@ -106,7 +102,7 @@ fn a_custom_touch_board_gets_no_hint_band_either() {
 /// The simulator wires a backend exactly as [`gallery::wire`] does.
 ///
 /// It cannot call `wire` — the gallery depends on the simulator, not the other
-/// way round — so `crates/backend/simulator/src/session.rs` repeats the
+/// way round — so `xpui-simulator`'s `src/session.rs` repeats the
 /// composition. Two copies of a derivation drift, and this is the only thing
 /// that would notice: change the labels `wire` picks and every golden moves,
 /// but the *window* would keep painting the old ones with nothing red.

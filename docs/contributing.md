@@ -3,7 +3,7 @@
 ## Building it
 
 SDL2 first: the simulator links it, and the workspace does not build without
-it — `brew install sdl2` on macOS, `apt install libsdl2-dev` on Debian and
+it — `brew install sdl2` on macOS, `sudo apt install libsdl2-dev` on Debian and
 Ubuntu. Then `rust-toolchain.toml` pins the rest, and every other dependency
 is a sibling repository fetched on `main`.
 

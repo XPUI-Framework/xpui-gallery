@@ -33,7 +33,7 @@
 //!
 //! ```bash
 //! cargo test -p xpui-gallery --test screenshots
-//! open examples/gallery/tests/screenshots/
+//! open gallery/tests/screenshots/
 //! open target/diff/                                  # after a failure
 //! ```
 //!
@@ -305,7 +305,8 @@ fn the_menu_on_every_board() {
     });
 }
 
-/// The screen spec 30 — *editing a value with one key* — rebuilds: a slider, a stepper, a toggle and a progress bar.
+/// The screen for editing a value with one key: a slider, a stepper, a toggle
+/// and a progress bar.
 #[test]
 fn the_controls_example_on_every_board() {
     on_every_board("controls", Header::Titled, |_backend, _board| {
@@ -316,11 +317,11 @@ fn the_controls_example_on_every_board() {
 
 /// The same screen with a value **open**, on every board.
 ///
-/// Spec 34's third state — *a mode you can see* — and the
-/// only capture of it. Without this the suite holds `Idle` and `Focused` on
+/// The third state of a value row — an edit you can see — and the only capture
+/// of it. Without this the suite holds `Idle` and `Focused` on
 /// seven panels and `Editing` on none — a state that draws correctly on one
 /// panel and not another is exactly what this file exists to notice, and the
-/// mode is what that whole spec is about.
+/// mode is what the open state is for.
 ///
 /// **Three boards never open one**, and that is the assertion for them rather
 /// than an exemption: the X3, the X4 and the Inky Frame have a Left/Right pair,

@@ -64,7 +64,9 @@ is this repository's permanent truth: both crates are `publish = false`, and
 
 | Document | Proven by |
 |---|---|
-| [`README.md`](README.md), [`gallery/README.md`](gallery/README.md), [`tutorial/README.md`](tutorial/README.md) | their paths and commands resolve; none carries a `rust` fence |
+| [`README.md`](README.md) | its `rust` fence is a doctest, mounted by `gallery/src/lib.rs`; its paths and commands resolve |
+| [`docs/README.md`](docs/README.md) | its paths resolve; the README-heading check exempts it, because it is the index of `docs/`, not a front page |
+| [`gallery/README.md`](gallery/README.md), [`tutorial/README.md`](tutorial/README.md) | their paths and commands resolve; neither carries a `rust` fence |
 | [`docs/conformance.md`](docs/conformance.md) | its `rust` fence is a doctest, mounted by `gallery/src/lib.rs`; its commands resolve |
 | [`docs/design.md`](docs/design.md) | mounted by `gallery/src/lib.rs`; it carries no `rust` fence, so what is checked is its paths |
 | [`docs/contributing.md`](docs/contributing.md) | every path and command it gives resolves; the umbrella command is `xpui-dev`'s |

@@ -15,7 +15,8 @@ Controls screen with a value open for editing, across the seven panels of
 `gallery/tests/typeface.rs` adds three more, `family_<name>.png`, in the same
 directory, which therefore holds seventy-three files; and
 `gallery/tests/gallery.rs` five text snapshots of the draw calls under
-`gallery/tests/snapshots/`. The tutorial crate has two of its own.
+`gallery/tests/snapshots/`. The tutorial crate has two screenshots of its
+own, under `tutorial/tests/screenshots/`.
 
 Beside each capture the suite asserts that the content band is not blank —
 with the *default* chrome a Badger's is 28 pixels and a list refuses to paint
@@ -66,8 +67,10 @@ three families, five draw-call snapshots, the tutorial's two — in one
 keystroke. **A blessed golden is an assertion you have made.** Open
 `gallery/tests/screenshots/`, read the diff, and only then stage it.
 
-The comparison itself is one call, and the name is the file the golden lives
-under:
+The comparison is one call, and the name is the file the golden lives under.
+The suite calls `check_screenshot`, which returns a mismatch rather than
+panicking, so one run names every board that moved; a test with a single
+capture calls `assert_screenshot`, which panics on the first:
 
 ```rust,no_run
 # use xpui_screenshot::Framebuffer;

@@ -46,14 +46,15 @@ pub use units::Units;
 /// `tests/physical.rs` measures through it, so a screenshot and a millimetre
 /// figure cannot disagree about what was on the glass.
 ///
-/// `!board.touch` is the hint band: a touch board gets none, the X4 Pro and
-/// the Sticky included, though both carry a key row too.
+/// A hint band only over a row of keys: a board with none — the X4 Pro and the
+/// Sticky, which take Back from the touchscreen — reserves no room for words
+/// naming keys it lacks.
 pub fn metrics_for(board: Board) -> Metrics {
     Metrics::for_device(
         board.width,
         board.height,
         board.ui_scale_percent,
-        !board.touch,
+        !board.keys.is_empty(),
     )
 }
 
@@ -76,11 +77,14 @@ where
         .with_fonts(Fonts::for_metrics(&metrics))
 }
 
-/// The two `docs/` pages, mounted: the conformance page's snippet is a
-/// doctest, so a re-bless instruction that stops matching the API fails, and
-/// `design.md` is mounted so a fence added to it is compiled from the start.
+/// The README and the two `docs/` pages, mounted: the README's and the
+/// conformance page's snippets are doctests, so an example or a re-bless
+/// instruction that stops matching the API fails, and `design.md` is mounted
+/// so a fence added to it is compiled from the start.
 #[cfg(doctest)]
 mod guides {
+    #[doc = include_str!("../../README.md")]
+    pub mod readme {}
     #[doc = include_str!("../../docs/conformance.md")]
     pub mod conformance {}
     #[doc = include_str!("../../docs/design.md")]

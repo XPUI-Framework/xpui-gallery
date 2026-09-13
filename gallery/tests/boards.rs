@@ -6,9 +6,9 @@
 //! panels or Seeed's. The gallery is the application that claims to fit all
 //! seven, so this is where the claim is checked.
 //!
-//! What is *not* here: the vocabulary's own rules, in
-//! `crates/boards/core/tests/vocabulary.rs`, and each vendor's own data, in
-//! `crates/boards/<vendor>/tests/<vendor>.rs`. A test that names one vendor
+//! What is *not* here: the vocabulary's own rules, in `xpui-boards`'s
+//! `core/tests/vocabulary.rs`, and each vendor's own data, in its
+//! `<vendor>/tests/<vendor>.rs`. A test that names one vendor
 //! and no other belongs there — it is not a census, and putting it here would
 //! make a Pimoroni change fail in a crate Pimoroni has never heard of.
 //!
@@ -204,6 +204,61 @@ fn every_button_is_on_the_body_and_off_the_panel() {
     }
 }
 
+/// The glass a body is drawn around is the glass its diagonal describes.
+///
+/// Both are written by hand — the diagonal in hundredths of an inch, the plan's
+/// panel in tenths of a millimetre — and they answer different callers: every
+/// millimetre a screen asks for comes from the diagonal, and the simulator
+/// draws the plan. Two percent is the rounding in `ppi`.
+#[test]
+fn every_body_holds_the_panel_its_diagonal_describes() {
+    let mut checked = 0;
+    for (board, bezel) in bezels() {
+        let ppi = board.ppi().expect("a measured panel");
+        let described = (board.width * 254 / ppi, board.height * 254 / ppi);
+        for (drawn, wanted, axis) in [
+            (bezel.panel_size.0, described.0, "wide"),
+            (bezel.panel_size.1, described.1, "tall"),
+        ] {
+            assert!(
+                (drawn - wanted).abs() * 50 <= wanted,
+                "{}: the body is drawn around glass {drawn} tenths of a mm {axis}, \
+                 and the diagonal makes it {wanted}",
+                board.name
+            );
+        }
+        checked += 1;
+    }
+    assert_eq!(checked, ALL.len(), "a board has no body to check");
+}
+
+/// A board whose footer carries no keys describes no row.
+///
+/// A row over keys that are not there paints nothing while the board reserves
+/// no hint band, and waits for the first consumer that asks for one. The
+/// X4 Pro's Home pad sits below its panel but is a gesture, not a row key.
+#[test]
+fn a_board_with_no_footer_describes_no_row() {
+    let mut without = 0;
+    for (board, bezel) in bezels() {
+        let footer = footer_of(bezel)
+            .into_iter()
+            .filter(|key| key.action != KeyAction::Home)
+            .count();
+        assert_eq!(
+            board.keys.is_empty(),
+            footer == 0,
+            "{}: its row describes {} keys and its footer carries {footer}",
+            board.name,
+            board.keys.len()
+        );
+        if footer == 0 {
+            without += 1;
+        }
+    }
+    assert_eq!(without, 2, "the X4 Pro and the Sticky carry no footer row");
+}
+
 /// The panel has to fit inside the body it is set into.
 #[test]
 fn the_panel_fits_in_the_body() {
@@ -392,7 +447,7 @@ fn bottom_keys(board: Board) -> u8 {
 #[test]
 fn a_board_labels_only_the_keys_it_has() {
     for board in ALL {
-        if board.touch {
+        if board.keys.is_empty() {
             continue;
         }
         assert_eq!(
@@ -408,7 +463,7 @@ fn a_board_labels_only_the_keys_it_has() {
 
 /// The hint painted over a key names the job that key actually does.
 ///
-/// Two descriptions of the same thing sit in `crates/boards`: the row, which
+/// Two descriptions of the same thing sit in `xpui-boards`: the row, which
 /// is what the hint bar paints, and the footer keys, which are what pressing
 /// one sends. Nothing makes them agree, and they did not — a change to the row
 /// left the keys alone, so on both Pimoroni boards every label sat one key to
@@ -424,9 +479,9 @@ fn a_boards_keys_match_the_row_it_paints() {
     let mut checked = 0;
 
     for board in ALL {
-        // A board that takes Back and Confirm from a touchscreen paints no
-        // hint band, so there is nothing to agree with.
-        if board.touch {
+        // A board with no row paints no hint band, so there is nothing to
+        // agree with.
+        if board.keys.is_empty() {
             continue;
         }
         let Some(bezel) = board.bezel else { continue };

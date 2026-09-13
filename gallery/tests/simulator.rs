@@ -66,8 +66,8 @@ fn the_simulator_starts_and_runs_a_frame_budget() {
     );
 }
 
-/// One frame is the case that used to panic: the loop reached `events()`
-/// before anything had painted.
+/// One frame is the case that panics if the loop reaches `events()` before
+/// anything has painted.
 #[test]
 fn the_very_first_frame_does_not_panic() {
     let (code, output) = run_headless(1);

@@ -1,6 +1,11 @@
 [![CI](https://github.com/XPUI-Framework/xpui-gallery/actions/workflows/ci.yml/badge.svg)](https://github.com/XPUI-Framework/xpui-gallery/actions/workflows/ci.yml) [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-# `xpui-gallery`
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/logo-black.png">
+  <img src="assets/logo-white.png" alt="XPUI" width="64" height="64">
+</picture>
+
+# Gallery
 
 > [!WARNING]
 > Under heavy development. Not production-ready. The API can break without
@@ -12,11 +17,13 @@ widget `xpui` has, on whichever device you name. The same screens are what
 the two firmwares flash: they have been run on a Badger and a Tufty, and they
 build for an X3 and a Sticky, which have no panel driver yet.
 
+Every document in this repository is listed in [docs/README.md](docs/README.md).
+
 ## Which crate you want
 
 | | |
 |---|---|
-| [`gallery`](gallery/) | The reference application, **and a library** both firmwares depend on. Its `tests/` are the seven-board conformance suite: ten captures × seven panels — eight screens, one of them in two states, plus a picker — for 70 golden images, and three more for typefaces. Then row overflow, chrome-for-a-board and the headless simulator loop |
+| [`gallery`](gallery/) | The reference application, **and a library** both firmwares depend on. Its `tests/` are the seven-board conformance suite: ten captures × seven panels — eight screens, two of them in two states — for 70 golden images, and three more for typefaces. Then row overflow, chrome-for-a-board and the headless simulator loop |
 | [`tutorial`](tutorial/) | The screen [the framework's tutorial](https://github.com/XPUI-Framework/xpui-framework/blob/main/docs/tutorial.md) builds, compiled and snapshotted — so the page a beginner follows cannot drift from an API that moved |
 
 **`gallery` is not an example.** Two firmwares link it, and it is where a board
@@ -30,11 +37,22 @@ cargo run -p xpui-gallery -- --board x3     # and x4, x4pro, sticky,
                                             # badger2040, tufty2040, inkyframe
 ```
 
-A firmware takes the screens as a library:
+A firmware takes the screens as a library. The package is `xpui-gallery`; the
+library it links is called `gallery`:
 
 ```toml
 [dependencies]
 xpui-gallery = { git = "https://github.com/XPUI-Framework/xpui-gallery", branch = "main" }
+```
+
+```rust
+use gallery::{Menu, metrics_for};
+use xpui_boards_xteink::X3;
+
+// The screen a firmware opens first, and the chrome it paints with on that
+// board.
+let _first = Menu::new();
+assert!(metrics_for(X3).button_hints_height > 0);
 ```
 
 It depends on everything below it —
@@ -46,13 +64,13 @@ It depends on everything below it —
 it is the caller, the one repository that names them all; and
 [`xpui-rp2040`](https://github.com/XPUI-Framework/xpui-rp2040) and
 [`xpui-esp32`](https://github.com/XPUI-Framework/xpui-esp32) each flash these
-screens onto one device. Nothing is on crates.io yet, which is what the
-banner above is about.
+screens onto one device. Nothing is on crates.io yet, which is why the
+dependency above is a `git` URL.
 
 ## Requirements
 
 SDL2, which the simulator links: `brew install sdl2` on macOS,
-`apt install libsdl2-dev` on Debian and Ubuntu. The tests run headless and
+`sudo apt install libsdl2-dev` on Debian and Ubuntu. The tests run headless and
 need no display.
 
 ## Checking it
@@ -68,14 +86,6 @@ commits a picture they never looked at; [docs/conformance.md](docs/conformance.m
 is how to read a failure and re-bless, and
 [docs/contributing.md](docs/contributing.md) is how a change is reviewed.
 
-## Where next
-
-| | |
-|---|---|
-| [docs/conformance.md](docs/conformance.md) | the seven-board suite: what it captures, how to run it, what a diff looks like, and how to re-bless |
-| [docs/design.md](docs/design.md) | why the suite is here, why the gallery is a library, the double press, the cost of two typefaces |
-| [docs/contributing.md](docs/contributing.md) | SDL2, every board every time, the gate, the five review steps, and how a commit is written |
-
 ## Where it sits
 
 Every arrow is a dependency in a `Cargo.toml`, and they all point inward
@@ -85,7 +95,7 @@ knowing it exists, and a firmware reaches whatever it needs directly rather
 than through whoever happens to sit above it.
 
 ```mermaid
-flowchart BT
+flowchart TD
   xpui["xpui<br/>the framework"]
   chrome["xpui-chrome<br/>components"]
   boards["xpui-boards<br/>seven devices"]

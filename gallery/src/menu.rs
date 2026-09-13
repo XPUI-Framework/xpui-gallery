@@ -12,7 +12,7 @@ use crate::screens;
 /// an example out of the menu.
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum Example {
-    /// Every value control the chrome paints, on one screen.
+    /// The value controls the chrome paints, on one screen.
     Controls,
     /// Rows with and without subtitles, and rows carrying a value.
     Lists,
@@ -24,7 +24,7 @@ pub enum Example {
     Text,
     /// Switches every screen to another font family, at run time.
     Typeface,
-    /// The heap, the frame timings and every control together.
+    /// Heap figures, a widget bench and a scrolling section.
     Developers,
 }
 

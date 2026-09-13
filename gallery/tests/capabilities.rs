@@ -1,7 +1,7 @@
 //! What a backend wired for a board answers about that board.
 //!
-//! The backend stores a `bool` and cannot derive it — see
-//! `crates/backend/embedded_graphics/tests/capabilities.rs`. Deriving it is the
+//! The backend stores a `bool` and cannot derive it — see `xpui-backends`'s
+//! `embedded_graphics/tests/capabilities.rs`. Deriving it is the
 //! application's job, so this is where the wiring is checked: that
 //! [`gallery::wire`] asks the board rather than guessing.
 //!
@@ -26,7 +26,7 @@ fn display() -> TestDisplay {
 ///
 /// Deliberately compared against the board's own answer rather than a second
 /// hand-written table. What is being checked here is the *wiring* — that the
-/// application asks the board — and `crates/boards` is where the answers
+/// application asks the board — and `xpui-boards` is where the answers
 /// themselves are pinned per board and argued for.
 #[test]
 fn a_backend_wired_for_a_board_answers_for_that_board() {
@@ -52,7 +52,7 @@ fn a_backend_wired_for_a_board_answers_for_that_board() {
     // whichever boards happened to agree with it. Both answers have to occur,
     // or this test is only checking one of them.
     //
-    // How many boards give each answer is `crates/boards`' to assert, and it
+    // How many boards give each answer is `xpui-boards`' to assert, and it
     // does. Repeating the count here would put the census in two crates, which
     // is the drift this method was added to end.
     assert!(
