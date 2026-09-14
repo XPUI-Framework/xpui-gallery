@@ -162,7 +162,7 @@ fn the_pictures_on_the_dialogs_and_text_pages() {
     App::new(Root("Settings", || sleep_after(Scrim::None))).render();
     failures.note(whole(backend, "dialogs_scrim_none"));
 
-    // docs/reference/text-and-images.md
+    // docs/reference/text.md
     failures.note(component::<Msg>("text_overview", || {
         hstack![12;
             Icon::new(Glyph::Book),
@@ -190,6 +190,7 @@ fn the_pictures_on_the_dialogs_and_text_pages() {
         ]
         .boxed()
     }));
+    // docs/reference/images.md
     failures.note(component::<Msg>("text_image", || {
         hstack![8; Image::new(&BOOKMARK, 16, 16), Text::new("Bookmarked")]
             .align(Alignment::Center)

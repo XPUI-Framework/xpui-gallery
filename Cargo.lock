@@ -357,7 +357,7 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 [[package]]
 name = "xpui"
 version = "0.1.0"
-source = "git+https://github.com/XPUI-Framework/xpui-framework?branch=main#c22f281f5d10922f530c9e0ff0477e36a4abe9f3"
+source = "git+https://github.com/XPUI-Framework/xpui-framework?branch=main#d86a9b00fa38392eb62e96d22ff235e3c9168cec"
 
 [[package]]
 name = "xpui-boards-core"
@@ -397,7 +397,7 @@ dependencies = [
 [[package]]
 name = "xpui-chrome"
 version = "0.1.0"
-source = "git+https://github.com/XPUI-Framework/xpui-chrome?branch=main#951cb0333a7616b74fc210ceb15506c3a55a422c"
+source = "git+https://github.com/XPUI-Framework/xpui-chrome?branch=main#c01a86af38629b3ee1af1d16fe7d89432f768adf"
 dependencies = [
  "xpui",
 ]

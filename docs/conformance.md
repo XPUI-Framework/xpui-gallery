@@ -19,7 +19,7 @@ directory, which therefore holds seventy-three files; and
 own, under `tutorial/tests/screenshots/`.
 
 Beside each capture the suite asserts that the content band is not blank —
-with the *default* chrome a Badger's is 28 pixels and a list refuses to paint
+with the *default* chrome a [Badger](https://shop.pimoroni.com/products/badger-2040)'s is 28 pixels and a list refuses to paint
 a row that does not fit, so the screen comes back empty — and asks for the
 screen's name in the header band and for ink in the hint bar on the boards
 that have one. Neither is asked of every capture, and the file says which

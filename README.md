@@ -14,8 +14,8 @@
 Ten captures on seven boards, and the suite that proves the framework paints
 the same thing on all of them. Run it and you have a window showing every
 widget `xpui` has, on whichever device you name. The same screens are what
-the two firmwares flash: they have been run on a Badger and a Tufty, and they
-build for an X3 and a Sticky, which have no panel driver yet.
+the two firmwares flash: they have been run on a [Badger](https://shop.pimoroni.com/products/badger-2040) and a [Tufty](https://shop.pimoroni.com/products/tufty-2040), and they
+build for an [X3](https://www.xteink.com/products/xteink-x3) and a [Sticky](https://www.seeedstudio.com/reTerminal-Sticky-p-6861.html), which have no panel driver yet.
 
 Every document in this repository is listed in [docs/README.md](docs/README.md).
 
@@ -64,13 +64,13 @@ It depends on everything below it —
 it is the caller, the one repository that names them all; and
 [`xpui-rp2040`](https://github.com/XPUI-Framework/xpui-rp2040) and
 [`xpui-esp32`](https://github.com/XPUI-Framework/xpui-esp32) each flash these
-screens onto one device. Nothing is on crates.io yet, which is why the
+screens onto one device. Nothing is on [crates.io](https://crates.io/) yet, which is why the
 dependency above is a `git` URL.
 
 ## Requirements
 
-SDL2, which the simulator links: `brew install sdl2` on macOS,
-`sudo apt install libsdl2-dev` on Debian and Ubuntu. The tests run headless and
+[SDL2](https://www.libsdl.org/), which the simulator links: `brew install sdl2` on macOS,
+`sudo apt install libsdl2-dev` on [Debian](https://www.debian.org/) and [Ubuntu](https://ubuntu.com/). The tests run headless and
 need no display.
 
 ## Checking it
@@ -80,7 +80,7 @@ need no display.
 ```
 
 The checks themselves are in [`xtask/`](xtask/) — this repository's own list,
-in Rust, holding nothing it does not run. `./build-and-test.sh fix` formats
+in [Rust](https://rust-lang.org/), holding nothing it does not run. `./build-and-test.sh fix` formats
 in place first. A first run of a new golden writes it **and fails**, so nobody
 commits a picture they never looked at; [docs/conformance.md](docs/conformance.md)
 is how to read a failure and re-bless, and

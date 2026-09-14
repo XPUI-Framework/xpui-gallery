@@ -22,7 +22,7 @@ still charge it the delay.
 Before choosing this for a board, check whether it has a key to spare. A delay
 on the one action a person takes most often is a poor trade for a button that
 was already there. No board in `gallery::boards::ALL` is arranged this way; the
-Badger and the Tufty each have an up/down pair and spend the first key on Back.
+[Badger](https://shop.pimoroni.com/products/badger-2040) and the [Tufty](https://shop.pimoroni.com/products/tufty-2040) each have an up/down pair and spend the first key on Back.
 
 ## Two extra families cost 99.8 KB (`gallery::fonts`)
 
@@ -38,7 +38,7 @@ for a Badger 2040 and measured with `arm-none-eabi-size` on the linked
 The absolute figures move with every change to the firmware; the difference
 between the rows is the number that means something, and it has held at
 99.8 KB (the rows are rounded to the kilobyte). The two extra families nearly double the firmware: 5% of a 2 MB
-RP2040's flash and affordable there, impossible on a part with 256 K. That is
+[RP2040](https://www.raspberrypi.com/products/rp2040/)'s flash and affordable there, impossible on a part with 256 K. That is
 why the backend ships one family and takes whatever else it is given — a board
 that cannot spare the space shortens `FAMILIES` and pays for nothing it does
 not use, because the two families are reachable from nowhere else and dropping
@@ -48,7 +48,7 @@ them from that list drops their bitmaps from the binary.
 
 A per-board regression is the easiest kind to ship and the hardest to see:
 the suite is green, the board you looked at is right, and two of the other
-six are broken. That has happened — a change to what the Pimoroni boards
+six are broken. That has happened — a change to what the [Pimoroni](https://shop.pimoroni.com/) boards
 *paint* left what they *send* alone, so every hint label sat one key off and
 no key produced Back, on two boards, with 169 tests passing.
 
