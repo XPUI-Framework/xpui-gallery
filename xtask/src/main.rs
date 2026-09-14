@@ -11,7 +11,7 @@
 //! Each repository in the organisation has its own copy of this shape, holding
 //! its own list. **This file is the part that is meant to differ**; the modules
 //! under it are byte-identical, and `shared_files_agree` in `xpui-dev` hashes
-//! all ten across the nine, so a fix to the fence scanner cannot land in one
+//! all thirteen across the nine, so a fix to the fence scanner cannot land in one
 //! repository and not the rest.
 //!
 //! A check written and never listed below is a dead function, which clippy
@@ -24,9 +24,12 @@ mod comments;
 mod docs;
 mod faults;
 mod fences;
+mod pages;
 mod paths;
 mod prose;
 mod readme;
+mod reference;
+mod rustdoc;
 mod tree;
 
 use std::process::ExitCode;
@@ -96,6 +99,10 @@ const NARRATION_CHECKED: bool = true;
 /// manifest and C++ file outside `tests/`.
 const COMMENT_SCOPE: Option<&str> = None;
 
+/// Where the reference pages are, and how far they mirror rustdoc. `None` is
+/// not adopted.
+const REFERENCE: Option<reference::Reference> = None;
+
 /// Bare-metal targets the screens are linted for. The gallery's library half
 /// is what a firmware links, so it has to compile for one.
 const BARE_METAL: [(&str, bool); 2] = [
@@ -155,6 +162,10 @@ fn main() -> ExitCode {
         (
             "rustdoc links resolve",
             Box::new(|| cargo::rustdoc(&["--workspace", TEST_FEATURES])),
+        ),
+        (
+            "the reference mirrors rustdoc",
+            Box::new(|| reference::mirrors_rustdoc(REFERENCE.as_ref())),
         ),
         (
             "documented commands resolve",
