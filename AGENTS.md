@@ -4,15 +4,15 @@
 
 The application layer: the reference screens `xpui` is demonstrated with, in
 a window on a desktop and as the library both firmwares flash, and the
-seven-board conformance suite that proves the framework paints the same thing
-on every panel it describes. It assembles the seven boards from three vendor
+eight-board conformance suite that proves the framework paints the same thing
+on every panel it describes. It assembles the eight boards from three vendor
 crates, because nothing below it may know more than one vendor, and it wires
 a backend the way a firmware does.
 
 **It is where screens live and where framework gaps show, never where they
 are fixed.** A screen that needs a workaround means `xpui` has a gap; the fix
 goes there. Nothing here is device-specific — a board is data handed in, and
-the same screens run on all seven — and no framework logic, no chrome and no
+the same screens run on all eight — and no framework logic, no chrome and no
 backend code belongs in this repository.
 
 ## The gate
@@ -32,7 +32,7 @@ change is done, and read the real exit code.
 
 ## What only this repository checks
 
-The seven-board conformance suite, under `tests`: seventy board captures,
+The eight-board conformance suite, under `tests`: eighty board captures,
 three typeface captures and five draw-call snapshots, compared pixel for
 pixel and byte for byte. The two bare-metal clippy runs under `lint` compile
 the `gallery` library alone (`LINT_CRATES`), the shape a firmware links.
@@ -43,7 +43,7 @@ is this repository's permanent truth: both crates are `publish = false`, and
 ## Style that bites here
 
 - **Every board, every time.** A change to layout, chrome or keys is checked
-  on all seven; a test about any of them walks `gallery::boards::ALL`.
+  on all eight; a test about any of them walks `gallery::boards::ALL`.
 - **A blessed golden is an assertion you have made.** `UPDATE_SNAPSHOTS=1`
   rewrites every golden the run touched; read the diff before staging, and
   never bless from a documentation change.

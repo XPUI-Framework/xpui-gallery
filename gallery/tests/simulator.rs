@@ -94,7 +94,7 @@ fn an_unknown_argument_is_refused() {
     );
 }
 
-/// The gallery offers all seven boards to the `B` key.
+/// The gallery offers all eight boards to the `B` key.
 ///
 /// The simulator has no device list of its own — `gallery/src/main.rs`
 /// passes one — so a deleted `.boards(..)` line ships a window whose `B` key
@@ -118,6 +118,6 @@ fn the_gallery_offers_every_board_to_the_board_key() {
 
     // Named rather than counted: a cycle of the right length holding the wrong
     // boards is the fault this is for.
-    let want = "x3 x4 x4pro sticky badger2040 tufty2040 inkyframe";
+    let want = "x3 x4 x4classic x4pro sticky badger2040 tufty2040 inkyframe";
     assert_eq!(cycle, want, "the gallery walks a list it does not claim to");
 }

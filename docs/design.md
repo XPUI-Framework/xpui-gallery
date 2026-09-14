@@ -44,11 +44,11 @@ that cannot spare the space shortens `FAMILIES` and pays for nothing it does
 not use, because the two families are reachable from nowhere else and dropping
 them from that list drops their bitmaps from the binary.
 
-## The seven-board suite is here, not in a backend (`gallery::boards`)
+## The eight-board suite is here, not in a backend (`gallery::boards`)
 
 A per-board regression is the easiest kind to ship and the hardest to see:
 the suite is green, the board you looked at is right, and two of the other
-six are broken. That has happened — a change to what the [Pimoroni](https://shop.pimoroni.com/) boards
+seven are broken. That has happened — a change to what the [Pimoroni](https://shop.pimoroni.com/) boards
 *paint* left what they *send* alone, so every hint label sat one key off and
 no key produced Back, on two boards, with 169 tests passing.
 

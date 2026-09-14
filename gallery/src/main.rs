@@ -45,7 +45,7 @@ fn main() {
     }
 
     let simulator = Simulator::new(Panel::of(board))
-        // The seven this example is built for. The simulator has no device
+        // The eight this example is built for. The simulator has no device
         // list of its own — it walks whatever it is handed, in this order —
         // so this is where the gallery says which panels it claims to fit.
         .boards(&boards::ALL)

@@ -21,14 +21,14 @@ The checks are listed in [`AGENTS.md`](../AGENTS.md) and implemented in
 
 ## Every board, every time
 
-There are seven boards, and a change is not finished until all seven are
+There are eight boards, and a change is not finished until all eight are
 checked — [`docs/design.md`](design.md) says what the regression this catches
 looks like, and [`docs/conformance.md`](conformance.md) how to run and read
 the suite. Any test about layout, chrome or keys walks `gallery::boards::ALL`
 rather than pinning one board.
 
 ```bash
-cargo run -p xpui-gallery -- --board x3        # and x4, x4pro, sticky,
+cargo run -p xpui-gallery -- --board x3        # and x4, x4classic, x4pro, sticky,
                                                # badger2040, tufty2040, inkyframe
 ```
 

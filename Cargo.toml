@@ -1,7 +1,7 @@
 # The reference application, and the conformance suite it doubles as.
 #
 # `gallery` is both: the screens the simulator opens and both firmwares flash,
-# and the seven-board suite that proves them — every screen on every panel,
+# and the eight-board suite that proves them — every screen on every panel,
 # against a committed PNG. `tutorial` is the screen `xpui`'s tutorial walks
 # to, in a window, so the prose and the runnable thing stay side by side.
 [workspace]

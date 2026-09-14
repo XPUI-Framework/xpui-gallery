@@ -27,7 +27,7 @@ xpui.workspace = true
 # The boards these screens are laid out for. Named directly rather than reached
 # through the simulator, because a device build has no simulator.
 
-# All three vendors, because this is the application that claims to fit seven
+# All three vendors, because this is the application that claims to fit eight
 # panels. A firmware takes the one vendor it flashes.
 xpui-boards-core.workspace = true
 xpui-boards-pimoroni.workspace = true

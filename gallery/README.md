@@ -14,7 +14,7 @@ cargo run -p xpui-gallery -- --board tufty2040     # a 320x240 colour LCD
 ```
 
 Arrows move focus, Enter opens, Backspace goes back, H is the home gesture,
-`B` walks the seven boards, Q or Escape quits. Clicking is a tap and the
+`B` walks the eight boards, Q or Escape quits. Clicking is a tap and the
 scroll wheel is a swipe.
 
 | Example | Shows |
@@ -37,7 +37,7 @@ has — and [`../docs/design.md`](../docs/design.md) says what that costs.
 ## Checking it
 
 The gate is the repository's; run `./build-and-test.sh` from the root. This
-crate's `tests/` are the seven-board conformance suite;
+crate's `tests/` are the eight-board conformance suite;
 [`../docs/conformance.md`](../docs/conformance.md) is how to read a failure
 and re-bless.
 

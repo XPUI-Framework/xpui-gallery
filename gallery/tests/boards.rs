@@ -1,10 +1,10 @@
-//! What the seven boards promise, taken together.
+//! What the eight boards promise, taken together.
 //!
 //! Every assertion here compares one vendor's board to another's, or walks all
-//! seven at once. **That has no home below the caller**: `xpui-boards-core`
+//! eight at once. **That has no home below the caller**: `xpui-boards-core`
 //! describes no device, and `xpui-boards-pimoroni` knows nothing of Xteink's
 //! panels or Seeed's. The gallery is the application that claims to fit all
-//! seven, so this is where the claim is checked.
+//! eight, so this is where the claim is checked.
 //!
 //! What is *not* here: the vocabulary's own rules, in `xpui-boards`'s
 //! `core/tests/vocabulary.rs`, and each vendor's own data, in its
@@ -129,6 +129,7 @@ fn the_derived_density_matches_the_panel() {
     for (board, published) in [
         (xteink::X3, 257),
         (xteink::X4, 218),
+        (xteink::X4_CLASSIC, 218),
         (xteink::X4_PRO, 218),
         (seeed::STICKY, 234),
         (pimoroni::BADGER_2040, 111),
@@ -347,7 +348,13 @@ fn a_portrait_board_presents_its_framebuffer_turned() {
 fn the_readers_are_portrait() {
     use xpui_boards_core::Orientation;
 
-    for board in [xteink::X3, xteink::X4, xteink::X4_PRO, seeed::STICKY] {
+    for board in [
+        xteink::X3,
+        xteink::X4,
+        xteink::X4_CLASSIC,
+        xteink::X4_PRO,
+        seeed::STICKY,
+    ] {
         assert_eq!(board.orientation, Orientation::Portrait, "{}", board.name);
         assert!(
             board.height > board.width,
@@ -373,6 +380,7 @@ fn touch_is_recorded_where_the_hardware_has_it() {
     for board in [
         xteink::X3,
         xteink::X4,
+        xteink::X4_CLASSIC,
         pimoroni::BADGER_2040,
         pimoroni::TUFTY_2040,
     ] {
@@ -510,12 +518,13 @@ fn a_boards_keys_match_the_row_it_paints() {
         }
     }
 
-    // Five boards paint a hint bar: the X3, the X4, and all three Pimoroni
-    // boards. The X4 Pro and the Sticky take Back from a touchscreen and have
-    // none. Counted by name rather than by family, because "readers" and
-    // "badges" split these five two different ways depending on who is asked.
+    // Six boards paint a hint bar: the X3, the X4, the X4 Classic, and all
+    // three Pimoroni boards. The X4 Pro and the Sticky take Back from a
+    // touchscreen and have none. Counted by name rather than by family, because
+    // "readers" and "badges" split these six two different ways depending on
+    // who is asked.
     assert_eq!(
-        checked, 5,
+        checked, 6,
         "the loop skipped a board it should have checked"
     );
 }
@@ -537,7 +546,7 @@ fn every_board_reports_the_pair_its_bezel_carries() {
     let expected = |slug: &str| match slug {
         // The readers' shared footer sends Left and Right on its third and
         // fourth keys, whatever the labels above them read.
-        "x3" | "x4" => Some(true),
+        "x3" | "x4" | "x4classic" => Some(true),
         // A reader with no footer at all: it takes back, confirm, left and
         // right from the touchscreen, and the keys it does wire turn pages and
         // sleep it.
@@ -576,8 +585,8 @@ fn every_board_reports_the_pair_its_bezel_carries() {
     }
 
     assert_eq!(
-        with_pair, 3,
-        "three boards carry the pair — the X3, the X4 and the Inky Frame"
+        with_pair, 4,
+        "four boards carry the pair — the X3, the X4, the X4 Classic and the Inky Frame"
     );
 }
 

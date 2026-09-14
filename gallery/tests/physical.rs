@@ -162,7 +162,12 @@ fn body_text_can_be_read_on_every_panel() {
 fn a_reader_gets_the_body_text_the_firmware_gets() {
     let _guard = serial();
 
-    for board in [xteink::X4, xteink::X4_PRO, seeed::STICKY] {
+    for board in [
+        xteink::X4,
+        xteink::X4_CLASSIC,
+        xteink::X4_PRO,
+        seeed::STICKY,
+    ] {
         let line = tenths(board, body_line_px(board));
         assert!(
             line >= READER_LINE_FLOOR,

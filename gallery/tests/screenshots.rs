@@ -4,18 +4,18 @@
 //! same screens through the `embedded_graphics` backend and the `chrome`
 //! components, so what it checks is the whole stack a device would run.
 //!
-//! **Ten screens across seven boards: seventy goldens, about 142 kB.**
+//! **Ten screens across eight boards: eighty goldens, about 170 kB.**
 //! The chrome is sized from metrics, and a measurement that lays out comfortably on a
 //! 600x448 Inky Frame can leave a 296x128 Badger with a content band of a few
-//! dozen pixels — so one panel proves nothing about the other six.
+//! dozen pixels — so one panel proves nothing about the other seven.
 //!
 //! The cost is small enough to read in a diff: these are 1-bit panels, and the
-//! files average 2,070 bytes. What it buys is measured rather than argued, by
+//! files average 2,126 bytes. What it buys is measured rather than argued, by
 //! moving one token by one pixel and counting:
 //!
 //! | one pixel added to | moves | on |
 //! |---|---|---|
-//! | `Metrics::DEFAULT.list_row_height` | 35 captures | 5 boards |
+//! | `Metrics::DEFAULT.list_row_height` | 42 captures | 6 boards |
 //! | `Metrics::SMALL.list_row_height` | 7 captures | the Badger |
 //! | `Metrics::SMALL.header_height` | 10 captures | the Badger |
 //!
@@ -28,8 +28,9 @@
 //! shape of the gap rather than its size.
 //!
 //! The X4 Pro and the Sticky are the same 480x800 panel at the same preset, so
-//! their goldens are byte-identical today. They are kept apart because a
-//! preset belongs to a board, and either board's could change alone.
+//! their goldens are byte-identical today, and so are the X4's and the X4
+//! Classic's. They are kept apart because a preset belongs to a board, and
+//! either board's could change alone.
 //!
 //! ```bash
 //! cargo test -p xpui-gallery --test screenshots
@@ -44,8 +45,8 @@
 //! ```
 //!
 //! **A blessed golden is an assertion you have made**: that this is what the
-//! screen should look like on that panel. Blessing seventy at once makes
-//! seventy of them in one keystroke, and a regression blessed is a
+//! screen should look like on that panel. Blessing eighty at once makes
+//! eighty of them in one keystroke, and a regression blessed is a
 //! regression with a test agreeing with it — the one failure mode this whole
 //! technique has. Open the directory and read the diff before committing.
 //!
@@ -116,13 +117,13 @@ enum Header {
     /// the band has ink in it from something that is not the header, so asking
     /// would pass on every board however the dialog behaved. Measured, not
     /// assumed: with the title suppressed and the picker marked `Titled`, the
-    /// check passes on all seven. A check that cannot fail is worse than none,
+    /// check passes on all eight. A check that cannot fail is worse than none,
     /// because it is counted. What covers the picker instead is its own
-    /// before-and-after comparison and its seven goldens.
+    /// before-and-after comparison and its eight goldens.
     Overlaid,
 }
 
-/// Captures `screen` on all seven boards, and reports **every** one that
+/// Captures `screen` on all eight boards, and reports **every** one that
 /// failed rather than the first.
 ///
 /// A change to a token, a row height or a hint moves several panels at once,
@@ -268,7 +269,7 @@ fn rows_are_painted(backend: &'static Backend<Framebuffer>, board: Board) -> Res
     let stride = xpui_chrome::row_height(&metrics, MENU_ROWS, &cells) + metrics.list_row_gap;
     // Short of the scroll indicator, which runs the height of the band on the
     // boards the menu does not fit: its dither is ink below the first row on
-    // three of the seven, and would answer this question for the list.
+    // three of the eight, and would answer this question for the list.
     let rows_end = board.width - metrics.scrollbar_width - metrics.scrollbar_inset;
     if ink(backend, 0, top + stride, rows_end, band - stride) == 0 {
         return Err(format!(
@@ -319,15 +320,15 @@ fn the_controls_example_on_every_board() {
 ///
 /// The third state of a value row — an edit you can see — and the only capture
 /// of it. Without this the suite holds `Idle` and `Focused` on
-/// seven panels and `Editing` on none — a state that draws correctly on one
+/// eight panels and `Editing` on none — a state that draws correctly on one
 /// panel and not another is exactly what this file exists to notice, and the
 /// mode is what the open state is for.
 ///
-/// **Three boards never open one**, and that is the assertion for them rather
-/// than an exemption: the X3, the X4 and the Inky Frame have a Left/Right pair,
-/// so Confirm nudges nothing and opens nothing, and their goldens here are the
-/// unopened screen. A change that started opening an edit where the pair exists
-/// would move those three.
+/// **Four boards never open one**, and that is the assertion for them rather
+/// than an exemption: the X3, the X4, the X4 Classic and the Inky Frame have a
+/// Left/Right pair, so Confirm nudges nothing and opens nothing, and their
+/// goldens here are the unopened screen. A change that started opening an edit
+/// where the pair exists would move those four.
 #[test]
 fn a_value_open_for_editing_on_every_board() {
     on_every_board("controls_open", Header::Titled, |backend, board| {
@@ -442,7 +443,7 @@ fn the_scrolling_example_on_every_board() {
 
 /// Font roles and weights, and a line longer than any of these panels.
 ///
-/// What six of the seven goldens show that line doing is running off the
+/// What seven of the eight goldens show that line doing is running off the
 /// right-hand edge: `Text` paints what it is given, so the last glyph is
 /// sliced by the framebuffer and there is no ellipsis. On the Badger the line
 /// is below the fold and not in the picture at all. `ListRow` truncates and
@@ -469,7 +470,7 @@ fn the_typeface_example_on_every_board() {
 /// scrolling section on one screen. The composite is where a per-board layout
 /// fault shows first, because the widgets have to fit beside each other.
 ///
-/// One thing to know before reading a diff of these seven: the memory figures
+/// One thing to know before reading a diff of these eight: the memory figures
 /// come from a counter that advances on every reading, so they are stable only
 /// as long as the runtime calls `body()` the same number of times per render.
 /// A diff in the *figures* rather than in the layout means that count changed,

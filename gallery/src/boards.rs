@@ -1,4 +1,4 @@
-//! The seven panels this gallery claims to fit.
+//! The eight panels this gallery claims to fit.
 //!
 //! There is no such thing as "every board" below this file. `xpui-boards-core`
 //! is the vocabulary and describes no device; each vendor crate describes its
@@ -6,7 +6,7 @@
 //! application's job, and this is the application.
 //!
 //! A firmware names the one board it flashes and needs none of this. A project
-//! shipping against two vendors writes its own seven-line version.
+//! shipping against two vendors writes its own eight-line version.
 
 use xpui_boards_core::Board;
 
@@ -16,9 +16,10 @@ use xpui_boards_core::Board;
 /// screenshots are taken in and the order the slugs are listed in on a bad
 /// `--board`. Grouped by vendor rather than by size, because that is how
 /// somebody looking for their device thinks about it.
-pub const ALL: [Board; 7] = [
+pub const ALL: [Board; 8] = [
     xpui_boards_xteink::X3,
     xpui_boards_xteink::X4,
+    xpui_boards_xteink::X4_CLASSIC,
     xpui_boards_xteink::X4_PRO,
     xpui_boards_seeed::STICKY,
     xpui_boards_pimoroni::BADGER_2040,

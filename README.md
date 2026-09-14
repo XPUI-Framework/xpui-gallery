@@ -11,7 +11,7 @@
 > Under heavy development. Not production-ready. The API can break without
 > notice. Use at your own risk.
 
-Ten captures on seven boards, and the suite that proves the framework paints
+Ten captures on eight boards, and the suite that proves the framework paints
 the same thing on all of them. Run it and you have a window showing every
 widget `xpui` has, on whichever device you name. The same screens are what
 the two firmwares flash: they have been run on a [Badger](https://shop.pimoroni.com/products/badger-2040) and a [Tufty](https://shop.pimoroni.com/products/tufty-2040), and they
@@ -23,7 +23,7 @@ Every document in this repository is listed in [docs/README.md](docs/README.md).
 
 | | |
 |---|---|
-| [`gallery`](gallery/) | The reference application, **and a library** both firmwares depend on. Its `tests/` are the seven-board conformance suite: ten captures × seven panels — eight screens, two of them in two states — for 70 golden images, and three more for typefaces. Then row overflow, chrome-for-a-board and the headless simulator loop |
+| [`gallery`](gallery/) | The reference application, **and a library** both firmwares depend on. Its `tests/` are the eight-board conformance suite: ten captures × eight panels — eight screens, two of them in two states — for 80 golden images, and three more for typefaces. Then row overflow, chrome-for-a-board and the headless simulator loop |
 | [`tutorial`](tutorial/) | The screen [the framework's tutorial](https://github.com/XPUI-Framework/xpui-framework/blob/main/docs/tutorial.md) builds, compiled and snapshotted — so the page a beginner follows cannot drift from an API that moved |
 
 **`gallery` is not an example.** Two firmwares link it, and it is where a board
@@ -33,7 +33,7 @@ rather than in either.
 ## Using it
 
 ```bash
-cargo run -p xpui-gallery -- --board x3     # and x4, x4pro, sticky,
+cargo run -p xpui-gallery -- --board x3     # and x4, x4classic, x4pro, sticky,
                                             # badger2040, tufty2040, inkyframe
 ```
 
@@ -98,7 +98,7 @@ than through whoever happens to sit above it.
 flowchart TD
   xpui["xpui<br/>the framework"]
   chrome["xpui-chrome<br/>components"]
-  boards["xpui-boards<br/>seven devices"]
+  boards["xpui-boards<br/>eight devices"]
   backends["xpui-backends<br/>two backends"]
   simulator["xpui-simulator<br/>a window"]
   gallery["xpui-gallery<br/>the app"]

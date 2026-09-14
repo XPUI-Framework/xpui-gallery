@@ -1,4 +1,4 @@
-# The seven-board conformance suite
+# The eight-board conformance suite
 
 `--board` changes the panel size, the chrome sized for it, and the window
 scale — and nothing else. The screens are untouched, which is the claim the
@@ -9,11 +9,11 @@ panel it describes.
 
 `gallery/tests/screenshots.rs` renders **every screen on every board**: the
 seven examples, plus the menu, the picker open over its content, and the
-Controls screen with a value open for editing, across the seven panels of
-`gallery::boards::ALL` — seventy committed PNGs under
+Controls screen with a value open for editing, across the eight panels of
+`gallery::boards::ALL` — eighty committed PNGs under
 `gallery/tests/screenshots/`, named `<screen>_<board slug>.png`.
 `gallery/tests/typeface.rs` adds three more, `family_<name>.png`, in the same
-directory, which therefore holds seventy-three files; and
+directory, which therefore holds eighty-three files; and
 `gallery/tests/gallery.rs` five text snapshots of the draw calls under
 `gallery/tests/snapshots/`. The tutorial crate has two screenshots of its
 own, under `tutorial/tests/screenshots/`.
@@ -51,7 +51,7 @@ rules: the committed golden, what was painted, and a mark on every pixel that
 differs.
 Then ask which of the three changed on purpose: the screen, the chrome, or
 the board. A one-pixel shift in one board's capture and no other is a board
-fault; the same shift in all seven is a screen or a chrome change.
+fault; the same shift in all eight is a screen or a chrome change.
 
 ## Re-blessing
 
@@ -62,7 +62,7 @@ commits a picture they have never looked at. Accept an intended change with:
 UPDATE_SNAPSHOTS=1 cargo test --workspace --features xpui/testing
 ```
 
-That rewrites **every** golden the run touched — seventy board captures,
+That rewrites **every** golden the run touched — eighty board captures,
 three families, five draw-call snapshots, the tutorial's two — in one
 keystroke. **A blessed golden is an assertion you have made.** Open
 `gallery/tests/screenshots/`, read the diff, and only then stage it.
@@ -83,7 +83,7 @@ xpui_screenshot::assert_screenshot("menu_x3", framebuffer);
 
 ## Every board, every time
 
-There are seven boards, and a change is not finished until all seven are
+There are eight boards, and a change is not finished until all eight are
 checked. Why the suite lives here rather than in a backend, and the
 per-board regression that has already shipped once, are in
 [design.md](design.md). Any test about layout, chrome or keys belongs in the
