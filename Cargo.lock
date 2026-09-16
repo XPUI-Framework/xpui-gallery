@@ -362,7 +362,7 @@ source = "git+https://github.com/XPUI-Framework/xpui-framework?branch=main#3f8a6
 [[package]]
 name = "xpui-boards-core"
 version = "0.1.0"
-source = "git+https://github.com/XPUI-Framework/xpui-boards?branch=main#1c1c2cb5063e3d65fb46bf2c45ce992936d49f73"
+source = "git+https://github.com/XPUI-Framework/xpui-boards?branch=main#b87ecffdd0cb7b6975c322b8ad2d6ea22868f718"
 dependencies = [
  "xpui",
 ]
@@ -397,7 +397,7 @@ dependencies = [
 [[package]]
 name = "xpui-chrome"
 version = "0.1.0"
-source = "git+https://github.com/XPUI-Framework/xpui-chrome?branch=main#c01a86af38629b3ee1af1d16fe7d89432f768adf"
+source = "git+https://github.com/XPUI-Framework/xpui-chrome?branch=main#2dae85999fe3e245ee62ff1d708e568951ba0e16"
 dependencies = [
  "xpui",
 ]
@@ -405,7 +405,7 @@ dependencies = [
 [[package]]
 name = "xpui-embedded-graphics"
 version = "0.1.0"
-source = "git+https://github.com/XPUI-Framework/xpui-backends?branch=main#1d9d72a902db46aaa6c22031768f82870a465d49"
+source = "git+https://github.com/XPUI-Framework/xpui-backends?branch=main#d71de2094ae310e2157e38f4031b40d480eb2fdf"
 dependencies = [
  "embedded-graphics",
  "u8g2-fonts",
@@ -432,7 +432,7 @@ dependencies = [
 [[package]]
 name = "xpui-screenshot"
 version = "0.1.0"
-source = "git+https://github.com/XPUI-Framework/xpui-backends?branch=main#1d9d72a902db46aaa6c22031768f82870a465d49"
+source = "git+https://github.com/XPUI-Framework/xpui-backends?branch=main#d71de2094ae310e2157e38f4031b40d480eb2fdf"
 dependencies = [
  "embedded-graphics",
  "png",
@@ -441,7 +441,7 @@ dependencies = [
 [[package]]
 name = "xpui-simulator"
 version = "0.1.0"
-source = "git+https://github.com/XPUI-Framework/xpui-simulator?branch=main#999d1e142d1fe104da0a3cd5dea1b8867c56186b"
+source = "git+https://github.com/XPUI-Framework/xpui-simulator?branch=main#54272fcc13ac0000a8e637797799b06e59343643"
 dependencies = [
  "embedded-graphics",
  "embedded-graphics-simulator",
