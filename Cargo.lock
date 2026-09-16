@@ -397,7 +397,7 @@ dependencies = [
 [[package]]
 name = "xpui-chrome"
 version = "0.1.0"
-source = "git+https://github.com/XPUI-Framework/xpui-chrome?branch=main#c01a86af38629b3ee1af1d16fe7d89432f768adf"
+source = "git+https://github.com/XPUI-Framework/xpui-chrome?branch=main#2dae85999fe3e245ee62ff1d708e568951ba0e16"
 dependencies = [
  "xpui",
 ]
